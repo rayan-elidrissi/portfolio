@@ -1,0 +1,426 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+
+\colorlet{lcfree}{black}
+\colorlet{lcexample}{green!65!black}
+\colorlet{lctheorem}{blue!70!black}
+\colorlet{lcproposition}{blue!70!black}
+\colorlet{lclemma}{blue!70!black}
+\colorlet{lcproblem}{red!80!black}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{problem}{Problem}[section]
+
+\title{Integration Theory: From Riemann to Lebesgue}
+\author{MIT Mathematics Department}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Introduction and Historical Context}
+
+The theory of integration has undergone significant evolution since the fundamental work of Bernhard Riemann in the mid-19th century. While Riemann integration serves as an adequate framework for many applications, its limitations in handling certain types of functions led to the development of more powerful integration theories, particularly the Lebesgue integration introduced by Henri Lebesgue in his 1902 doctoral dissertation.
+
+This lecture presents a rigorous treatment of integration theory, beginning with the Riemann integral and its limitations, followed by the measure-theoretic foundations necessary for understanding the Lebesgue integral, and concluding with advanced topics and applications in functional analysis and probability theory.
+
+\section{Riemann Integration}
+
+\subsection{Definition and Basic Properties}
+
+\begin{definition}[Partition]
+A partition $P$ of a closed interval $[a,b]$ is a finite set of points $P = \{x_0, x_1, \ldots, x_n\}$ such that $a = x_0 < x_1 < \cdots < x_n = b$. The mesh size of $P$ is defined as $\|P\| = \max_{1 \leq i \leq n} (x_i - x_{i-1})$.
+\end{definition}
+
+\begin{definition}[Riemann Sum]
+Given a bounded function $f: [a,b] \to \mathbb{R}$ and a partition $P = \{x_0, x_1, \ldots, x_n\}$ of $[a,b]$, the Riemann sum of $f$ with respect to $P$ is:
+\begin{equation}
+S(f, P) = \sum_{i=1}^{n} f(\xi_i) (x_i - x_{i-1})
+\end{equation}
+where $\xi_i \in [x_{i-1}, x_i]$ for each $i$.
+\end{definition}
+
+\begin{definition}[Riemann Integrability]
+A bounded function $f: [a,b] \to \mathbb{R}$ is Riemann integrable if the limit
+\begin{equation}
+\lim_{\|P\| \to 0} S(f, P)
+\end{equation}
+exists independently of the choice of partition $P$ and points $\xi_i$. In this case, the limit is denoted by $\int_a^b f(x) \, dx$ and is called the Riemann integral of $f$ over $[a,b]$.
+\end{definition}
+
+\begin{theorem}[Characterization of Riemann Integrability]
+A bounded function $f: [a,b] \to \mathbb{R}$ is Riemann integrable if and only if it is continuous almost everywhere, i.e., the set of discontinuities of $f$ has Lebesgue measure zero.
+\end{theorem}
+
+\subsection{Limitations of Riemann Integration}
+
+\begin{example}[Dirichlet Function]
+Consider the function $f: [0,1] \to \mathbb{R}$ defined by
+\begin{equation}
+f(x) = 
+\begin{cases}
+1 & \text{if $x$ is rational} \\
+0 & \text{if $x$ is irrational}
+\end{cases}
+\end{equation}
+This function is not Riemann integrable because it is discontinuous at every point in $[0,1]$.
+\end{example}
+
+\begin{example}[Unbounded Functions]
+The function $f(x) = \frac{1}{\sqrt{x}}$ on $(0,1]$ is not Riemann integrable due to its unboundedness near $x = 0$, despite having a finite "improper" Riemann integral.
+\end{example}
+
+\section{Measure Theory Foundations}
+
+\subsection{Sigma-Algebras and Measures}
+
+\begin{definition}[Sigma-Algebra]
+A $\sigma$-algebra $\mathcal{F}$ on a set $X$ is a collection of subsets of $X$ such that:
+\begin{enumerate}[label=(\roman*)]
+\item $\emptyset \in \mathcal{F}$
+\item If $A \in \mathcal{F}$, then $X \setminus A \in \mathcal{F}$ (closed under complementation)
+\item If $A_1, A_2, \ldots \in \mathcal{F}$, then $\bigcup_{i=1}^{\infty} A_i \in \mathcal{F}$ (closed under countable unions)
+\end{enumerate}
+The pair $(X, \mathcal{F})$ is called a measurable space.
+\end{definition}
+
+\begin{definition}[Measure]
+A measure $\mu$ on a measurable space $(X, \mathcal{F})$ is a function $\mu: \mathcal{F} \to [0, \infty]$ such that:
+\begin{enumerate}[label=(\roman*)]
+\item $\mu(\emptyset) = 0$
+\item If $\{A_i\}_{i=1}^{\infty}$ is a sequence of pairwise disjoint sets in $\mathcal{F}$, then
+\begin{equation}
+\mu\left(\bigcup_{i=1}^{\infty} A_i\right) = \sum_{i=1}^{\infty} \mu(A_i)
+\end{equation}
+(countable additivity)
+\end{enumerate}
+The triple $(X, \mathcal{F}, \mu)$ is called a measure space.
+\end{definition}
+
+\subsection{Borel Sets and Lebesgue Measure}
+
+\begin{definition}[Borel $\sigma$-algebra]
+The Borel $\sigma$-algebra $\mathcal{B}(\mathbb{R})$ on $\mathbb{R}$ is the smallest $\sigma$-algebra containing all open intervals.
+\end{definition}
+
+\begin{definition}[Lebesgue Measure]
+The Lebesgue measure $\lambda$ on $\mathbb{R}$ is the unique complete measure on $(\mathbb{R}, \mathcal{B}(\mathbb{R}))$ that assigns to each interval $[a,b]$ its length $b-a$.
+\end{definition}
+
+\begin{theorem}[Properties of Lebesgue Measure]
+The Lebesgue measure $\lambda$ on $\mathbb{R}$ satisfies:
+\begin{enumerate}[label=(\roman*)]
+\item For any interval $(a,b)$, $[a,b]$, $(a,b]$, or $[a,b)$, $\lambda((a,b)) = \lambda([a,b]) = \lambda((a,b]) = \lambda([a,b)) = b - a$
+\item (Translation invariance) For any measurable set $A$ and any $c \in \mathbb{R}$, $\lambda(A + c) = \lambda(A)$ where $A + c = \{x + c : x \in A\}$
+\item (Scaling) For any measurable set $A$ and any $c > 0$, $\lambda(cA) = c \cdot \lambda(A)$ where $cA = \{cx : x \in A\}$
+\end{enumerate}
+\end{theorem}
+
+\begin{example}[Cantor Set]
+The Cantor set $C$ is constructed by repeatedly removing the middle third of each interval. Formally, let $C_0 = [0,1]$, $C_1 = [0,\frac{1}{3}] \cup [\frac{2}{3},1]$, and in general,
+\begin{equation}
+C_n = \bigcup_{i=0}^{2^n-1} \left[\frac{i}{3^n}, \frac{i}{3^n} + \frac{1}{3^n}\right] \setminus \bigcup_{i=0}^{2^{n-1}-1} \left[\frac{3i+1}{3^n}, \frac{3i+2}{3^n}\right]
+\end{equation}
+Then $C = \bigcap_{n=0}^{\infty} C_n$ is the Cantor set. It has Lebesgue measure zero but is uncountable.
+\end{example}
+
+\section{Measurable Functions}
+
+\begin{definition}[Measurable Function]
+Let $(X, \mathcal{F})$ and $(Y, \mathcal{G})$ be measurable spaces. A function $f: X \to Y$ is said to be measurable if for every $G \in \mathcal{G}$, the preimage $f^{-1}(G) \in \mathcal{F}$.
+\end{definition}
+
+\begin{theorem}[Characterization of Measurable Functions]
+For a function $f: \mathbb{R} \to \mathbb{R}$, the following are equivalent:
+\begin{enumerate}[label=(\roman*)]
+\item $f$ is Borel measurable (i.e., measurable with respect to the Borel $\sigma$-algebras on the domain and codomain)
+\item For every $a \in \mathbb{R}$, the set $\{x \in \mathbb{R} : f(x) > a\}$ is Borel measurable
+\item For every $a \in \mathbb{R}$, the set $\{x \in \mathbb{R} : f(x) \leq a\}$ is Borel measurable
+\end{enumerate}
+\end{theorem}
+
+\begin{proposition}[Closure Properties of Measurable Functions]
+Let $f, g: X \to \mathbb{R}$ be measurable functions on a measurable space $(X, \mathcal{F})$. Then:
+\begin{enumerate}[label=(\roman*)]
+\item $f + g$, $f \cdot g$, $\max(f, g)$, and $\min(f, g)$ are measurable
+\item If $g \neq 0$ everywhere, then $f/g$ is measurable
+\item If $\{f_n\}$ is a sequence of measurable functions, then $\sup_n f_n$, $\inf_n f_n$, $\limsup_n f_n$, and $\liminf_n f_n$ are measurable
+\end{enumerate}
+\end{proposition}
+
+\section{Lebesgue Integration}
+
+\subsection{Construction of the Lebesgue Integral}
+
+\begin{definition}[Simple Function]
+A simple function $\varphi: X \to \mathbb{R}$ on a measurable space $(X, \mathcal{F})$ is a function of the form
+\begin{equation}
+\varphi(x) = \sum_{i=1}^{n} \alpha_i \chi_{A_i}(x)
+\end{equation}
+where $\alpha_i \in \mathbb{R}$, $A_i \in \mathcal{F}$, and $\chi_{A_i}$ is the characteristic function of $A_i$.
+\end{definition}
+
+\begin{definition}[Lebesgue Integral of a Simple Function]
+Let $(X, \mathcal{F}, \mu)$ be a measure space and let $\varphi = \sum_{i=1}^{n} \alpha_i \chi_{A_i}$ be a non-negative simple function. The Lebesgue integral of $\varphi$ is defined as
+\begin{equation}
+\int_X \varphi \, d\mu = \sum_{i=1}^{n} \alpha_i \mu(A_i)
+\end{equation}
+\end{definition}
+
+\begin{definition}[Lebesgue Integral of a Non-negative Function]
+Let $f: X \to [0, \infty]$ be a non-negative measurable function. The Lebesgue integral of $f$ is defined as
+\begin{equation}
+\int_X f \, d\mu = \sup \left\{ \int_X \varphi \, d\mu : 0 \leq \varphi \leq f, \varphi \text{ is a simple function} \right\}
+\end{equation}
+\end{definition}
+
+\begin{definition}[Lebesgue Integral of a General Function]
+Let $f: X \to \mathbb{R}$ be a measurable function. Define $f^+ = \max(f, 0)$ and $f^- = \max(-f, 0)$, so that $f = f^+ - f^-$. If at least one of $\int_X f^+ \, d\mu$ or $\int_X f^- \, d\mu$ is finite, then the Lebesgue integral of $f$ is defined as
+\begin{equation}
+\int_X f \, d\mu = \int_X f^+ \, d\mu - \int_X f^- \, d\mu
+\end{equation}
+\end{definition}
+
+\subsection{Properties of the Lebesgue Integral}
+
+\begin{theorem}[Linearity]
+Let $f, g$ be integrable functions on a measure space $(X, \mathcal{F}, \mu)$ and let $\alpha, \beta \in \mathbb{R}$. Then $\alpha f + \beta g$ is integrable and
+\begin{equation}
+\int_X (\alpha f + \beta g) \, d\mu = \alpha \int_X f \, d\mu + \beta \int_X g \, d\mu
+\end{equation}
+\end{theorem}
+
+\begin{theorem}[Monotonicity]
+Let $f, g$ be integrable functions on a measure space $(X, \mathcal{F}, \mu)$ such that $f \leq g$ almost everywhere. Then
+\begin{equation}
+\int_X f \, d\mu \leq \int_X g \, d\mu
+\end{equation}
+\end{theorem}
+
+\begin{theorem}[Fatou's Lemma]
+Let $\{f_n\}$ be a sequence of non-negative measurable functions on a measure space $(X, \mathcal{F}, \mu)$. Then
+\begin{equation}
+\int_X \liminf_{n \to \infty} f_n \, d\mu \leq \liminf_{n \to \infty} \int_X f_n \, d\mu
+\end{equation}
+\end{theorem}
+
+\subsection{Convergence Theorems}
+
+\begin{theorem}[Monotone Convergence Theorem]
+Let $\{f_n\}$ be a sequence of measurable functions on a measure space $(X, \mathcal{F}, \mu)$ such that:
+\begin{enumerate}[label=(\roman*)]
+\item $0 \leq f_1 \leq f_2 \leq \cdots$ almost everywhere
+\item $f_n \to f$ almost everywhere as $n \to \infty$
+\end{enumerate}
+Then
+\begin{equation}
+\lim_{n \to \infty} \int_X f_n \, d\mu = \int_X f \, d\mu
+\end{equation}
+\end{theorem}
+
+\begin{theorem}[Dominated Convergence Theorem]
+Let $\{f_n\}$ be a sequence of measurable functions on a measure space $(X, \mathcal{F}, \mu)$ such that:
+\begin{enumerate}[label=(\roman*)]
+\item $f_n \to f$ almost everywhere as $n \to \infty$
+\item There exists an integrable function $g$ such that $|f_n| \leq g$ almost everywhere for all $n$
+\end{enumerate}
+Then $f$ is integrable and
+\begin{equation}
+\lim_{n \to \infty} \int_X f_n \, d\mu = \int_X f \, d\mu
+\end{equation}
+\end{theorem}
+
+\section{Comparison of Riemann and Lebesgue Integrals}
+
+\begin{theorem}
+If a bounded function $f: [a,b] \to \mathbb{R}$ is Riemann integrable, then it is Lebesgue integrable, and the two integrals coincide:
+\begin{equation}
+\int_a^b f(x) \, dx = \int_{[a,b]} f \, d\lambda
+\end{equation}
+where the left side is the Riemann integral and the right side is the Lebesgue integral with respect to Lebesgue measure $\lambda$.
+\end{theorem}
+
+\begin{example}[Functions Integrable in Lebesgue Sense but not Riemann Sense]
+\begin{enumerate}[label=(\alph*)]
+\item The Dirichlet function, which is 1 on rationals and 0 on irrationals, is Lebesgue integrable with integral value 0 (since the rationals have measure zero), but not Riemann integrable.
+\item The function $f(x) = \frac{1}{x^{1/2}}$ on $(0,1]$, extended by $f(0) = 0$, is Lebesgue integrable but not Riemann integrable.
+\end{enumerate}
+\end{example}
+
+\section{Integration on Product Spaces}
+
+\subsection{Product Measures}
+
+\begin{theorem}[Fubini's Theorem]
+Let $(X, \mathcal{F}, \mu)$ and $(Y, \mathcal{G}, \nu)$ be $\sigma$-finite measure spaces, and let $f: X \times Y \to \mathbb{R}$ be integrable with respect to the product measure $\mu \times \nu$. Then:
+\begin{enumerate}[label=(\roman*)]
+\item For almost all $x \in X$, the function $y \mapsto f(x,y)$ is integrable with respect to $\nu$
+\item The function $x \mapsto \int_Y f(x,y) \, d\nu(y)$ is integrable with respect to $\mu$
+\item 
+\begin{equation}
+\int_{X \times Y} f \, d(\mu \times \nu) = \int_X \left( \int_Y f(x,y) \, d\nu(y) \right) \, d\mu(x)
+\end{equation}
+\end{enumerate}
+Similarly, the iterated integral in the reverse order equals the original integral.
+\end{theorem}
+
+\begin{theorem}[Tonelli's Theorem]
+Let $(X, \mathcal{F}, \mu)$ and $(Y, \mathcal{G}, \nu)$ be $\sigma$-finite measure spaces, and let $f: X \times Y \to [0, \infty]$ be measurable. Then:
+\begin{equation}
+\int_{X \times Y} f \, d(\mu \times \nu) = \int_X \left( \int_Y f(x,y) \, d\nu(y) \right) \, d\mu(x) = \int_Y \left( \int_X f(x,y) \, d\mu(x) \right) \, d\nu(y)
+\end{equation}
+\end{theorem}
+
+\section{$L^p$ Spaces}
+
+\begin{definition}[$L^p$ Space]
+For $1 \leq p < \infty$, the space $L^p(X, \mathcal{F}, \mu)$ consists of all measurable functions $f: X \to \mathbb{R}$ such that
+\begin{equation}
+\|f\|_p = \left( \int_X |f|^p \, d\mu \right)^{1/p} < \infty
+\end{equation}
+The space $L^\infty(X, \mathcal{F}, \mu)$ consists of all essentially bounded measurable functions, with norm
+\begin{equation}
+\|f\|_\infty = \text{ess sup}_{x \in X} |f(x)| = \inf \{M \geq 0 : |f(x)| \leq M \text{ for almost all } x \in X\}
+\end{equation}
+\end{definition}
+
+\begin{theorem}[Hölder's Inequality]
+Let $1 \leq p, q \leq \infty$ be conjugate exponents, i.e., $\frac{1}{p} + \frac{1}{q} = 1$ (with the convention that $\frac{1}{\infty} = 0$). If $f \in L^p$ and $g \in L^q$, then $fg \in L^1$ and
+\begin{equation}
+\|fg\|_1 \leq \|f\|_p \|g\|_q
+\end{equation}
+\end{theorem}
+
+\begin{theorem}[Minkowski's Inequality]
+Let $1 \leq p \leq \infty$. If $f, g \in L^p$, then $f + g \in L^p$ and
+\begin{equation}
+\|f + g\|_p \leq \|f\|_p + \|g\|_p
+\end{equation}
+\end{theorem}
+
+\begin{theorem}[$L^p$ Spaces are Banach Spaces]
+For $1 \leq p \leq \infty$, $L^p(X, \mathcal{F}, \mu)$ is a complete normed vector space under the norm $\|\cdot\|_p$.
+\end{theorem}
+
+\begin{theorem}[Riesz-Fischer Theorem]
+Let $1 \leq p < \infty$. A sequence $\{f_n\}$ in $L^p$ converges to $f$ in the $L^p$ norm if and only if:
+\begin{enumerate}[label=(\roman*)]
+\item $\{f_n\}$ is a Cauchy sequence in $L^p$
+\item There exists a subsequence $\{f_{n_k}\}$ that converges to $f$ almost everywhere
+\end{enumerate}
+\end{theorem}
+
+\section{Applications in Analysis and Probability}
+
+\subsection{Connections to Functional Analysis}
+
+\begin{theorem}[Riesz Representation Theorem]
+Let $(X, \mathcal{F}, \mu)$ be a $\sigma$-finite measure space, and let $1 \leq p < \infty$. If $p$ and $q$ are conjugate exponents, then $(L^p)^* \cong L^q$. That is, every continuous linear functional $\Lambda$ on $L^p$ can be represented uniquely as
+\begin{equation}
+\Lambda(f) = \int_X fg \, d\mu
+\end{equation}
+for some $g \in L^q$, and $\|\Lambda\| = \|g\|_q$.
+\end{theorem}
+
+\subsection{Connections to Probability Theory}
+
+\begin{theorem}[Law of Large Numbers]
+Let $X_1, X_2, \ldots$ be independent and identically distributed random variables with finite mean $\mu$. Then
+\begin{equation}
+\frac{1}{n} \sum_{i=1}^{n} X_i \to \mu \quad \text{almost surely as } n \to \infty
+\end{equation}
+\end{theorem}
+
+\begin{theorem}[Central Limit Theorem]
+Let $X_1, X_2, \ldots$ be independent and identically distributed random variables with finite mean $\mu$ and finite variance $\sigma^2 > 0$. Then
+\begin{equation}
+\frac{1}{\sigma\sqrt{n}} \sum_{i=1}^{n} (X_i - \mu) \to Z \quad \text{in distribution as } n \to \infty
+\end{equation}
+where $Z$ is a standard normal random variable.
+\end{theorem}
+
+\section{Advanced Topics in Integration Theory}
+
+\subsection{Radon-Nikodym Theorem}
+
+\begin{definition}[Absolute Continuity]
+Let $\mu$ and $\nu$ be measures on a measurable space $(X, \mathcal{F})$. We say that $\nu$ is absolutely continuous with respect to $\mu$, written $\nu \ll \mu$, if for any $A \in \mathcal{F}$, $\mu(A) = 0$ implies $\nu(A) = 0$.
+\end{definition}
+
+\begin{theorem}[Radon-Nikodym]
+Let $\mu$ and $\nu$ be $\sigma$-finite measures on a measurable space $(X, \mathcal{F})$ such that $\nu \ll \mu$. Then there exists a non-negative measurable function $f: X \to [0, \infty)$ such that
+\begin{equation}
+\nu(A) = \int_A f \, d\mu
+\end{equation}
+for all $A \in \mathcal{F}$. This function $f$ is unique up to $\mu$-almost everywhere equality and is denoted by $\frac{d\nu}{d\mu}$.
+\end{theorem}
+
+\subsection{Differentiation of Measures}
+
+\begin{theorem}[Lebesgue Differentiation Theorem]
+Let $f: \mathbb{R}^n \to \mathbb{R}$ be locally integrable. Then for almost every $x \in \mathbb{R}^n$,
+\begin{equation}
+\lim_{r \to 0} \frac{1}{|B(x,r)|} \int_{B(x,r)} f(y) \, dy = f(x)
+\end{equation}
+where $B(x,r)$ is the ball of radius $r$ centered at $x$ and $|B(x,r)|$ is its Lebesgue measure.
+\end{theorem}
+
+\section{Advanced Exercises}
+
+\begin{problem}
+Show that the Cantor set has Lebesgue measure zero but is uncountable.
+\end{problem}
+
+\begin{problem}
+Let $f: [0,1] \to \mathbb{R}$ be defined by $f(x) = 1$ if $x$ is rational and $f(x) = 0$ if $x$ is irrational. Compute $\int_0^1 f(x) \, dx$ in the Lebesgue sense.
+\end{problem}
+
+\begin{problem}
+Prove that if $f \in L^1(\mathbb{R})$, then $\lim_{|x| \to \infty} f(x) = 0$ almost everywhere.
+\end{problem}
+
+\begin{problem}
+Let $f \in L^1([0,1])$. Define $F(x) = \int_0^x f(t) \, dt$ for $x \in [0,1]$. Show that $F$ is absolutely continuous and $F'(x) = f(x)$ for almost every $x \in [0,1]$.
+\end{problem}
+
+\begin{problem}
+Construct a function $f: [0,1] \to \mathbb{R}$ that is Lebesgue integrable but not Riemann integrable.
+\end{problem}
+
+\begin{problem}
+Prove or disprove: If $f \in L^1(\mathbb{R})$ and $g \in L^\infty(\mathbb{R})$, then the convolution $f * g$ defined by $(f * g)(x) = \int_{\mathbb{R}} f(y)g(x-y) \, dy$ satisfies $\|f * g\|_\infty \leq \|f\|_1 \|g\|_\infty$.
+\end{problem}
+
+\section{Further Reading}
+
+\begin{itemize}
+\item Folland, G. B. (1999). \textit{Real Analysis: Modern Techniques and Their Applications} (2nd ed.). Wiley.
+\item Rudin, W. (1987). \textit{Real and Complex Analysis} (3rd ed.). McGraw-Hill.
+\item Stein, E. M., \& Shakarchi, R. (2005). \textit{Real Analysis: Measure Theory, Integration, and Hilbert Spaces}. Princeton University Press.
+\item Halmos, P. R. (1974). \textit{Measure Theory}. Springer.
+\item Royden, H. L., \& Fitzpatrick, P. M. (2010). \textit{Real Analysis} (4th ed.). Prentice Hall.
+\end{itemize}
+
+\end{document} 

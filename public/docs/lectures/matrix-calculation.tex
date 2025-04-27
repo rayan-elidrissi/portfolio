@@ -1,0 +1,271 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{bm}
+
+\colorlet{lcfree}{black}
+\colorlet{lcexample}{green!65!black}
+\colorlet{lctheorem}{blue!70!black}
+\colorlet{lcproposition}{blue!70!black}
+\colorlet{lclemma}{blue!70!black}
+\colorlet{lcproblem}{red!80!black}
+
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}{Example}[section]
+\newtheorem{problem}{Problem}[section]
+
+\title{Advanced Matrix Calculation}
+\author{Rayan El Idrissi\\ENS Ulm - Mathematics Department}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Historical Foundations and Algebraic Development}
+
+\subsection{The Birth of Matrix Algebra}
+The formal study of matrices began with the pioneering work of Arthur Cayley in his 1858 paper "A Memoir on the Theory of Matrices." However, the concept has much deeper historical roots, appearing implicitly in Leibniz's work on determinants and in the study of linear transformations.
+
+\begin{definition}
+A \textbf{matrix} is a rectangular array of numbers, symbols, or expressions arranged in rows and columns.
+\end{definition}
+
+\begin{definition}
+Given an $m \times n$ matrix $A = (a_{ij})$ and an $n \times p$ matrix $B = (b_{jk})$, their \textbf{product} $C = AB$ is an $m \times p$ matrix where:
+\[c_{ik} = \sum_{j=1}^{n} a_{ij}b_{jk}\]
+\end{definition}
+
+\begin{theorem}[Cayley-Hamilton]
+Every square matrix satisfies its own characteristic equation.
+\end{theorem}
+
+\subsection{The Abstract Theory of Linear Transformations}
+Georg Frobenius extended the theory of matrices by connecting it to linear transformations, establishing the foundation for the modern abstract approach to linear algebra.
+
+\begin{theorem}[Isomorphism Theorem]
+Let $V$ and $W$ be finite-dimensional vector spaces over a field $\mathbb{F}$. There exists an isomorphism between the space of linear maps $L(V,W)$ and the space of matrices $M_{m,n}(\mathbb{F})$ where $\dim V = n$ and $\dim W = m$.
+\end{theorem}
+
+\section{Spectral Theory}
+
+\subsection{Eigenvalues and Eigenvectors}
+The concept of eigenvalues and eigenvectors, formalized by David Hilbert, provides powerful tools for analyzing matrices and their associated transformations.
+
+\begin{definition}
+If $A$ is an $n \times n$ matrix, a non-zero vector $\mathbf{v}$ is an \textbf{eigenvector} of $A$ with eigenvalue $\lambda$ if $A\mathbf{v} = \lambda\mathbf{v}$.
+\end{definition}
+
+\begin{proposition}
+The eigenvalues of a matrix $A$ are the roots of its characteristic polynomial $p_A(\lambda) = \det(A - \lambda I)$.
+\end{proposition}
+
+\begin{theorem}[Spectral Theorem for Normal Matrices]
+A matrix $A$ is normal (i.e., $A^*A = AA^*$) if and only if it is unitarily diagonalizable.
+\end{theorem}
+
+\subsection{Jordan Canonical Form}
+For matrices that are not diagonalizable, the Jordan canonical form provides a standardized representation that reveals their structure.
+
+\begin{theorem}[Jordan Decomposition]
+For any complex square matrix $A$, there exists an invertible matrix $P$ such that $P^{-1}AP = J$, where $J$ is a block diagonal matrix with each block being a Jordan block.
+\end{theorem}
+
+\begin{definition}
+A \textbf{Jordan block} $J_k(\lambda)$ is a $k \times k$ matrix with $\lambda$ on the main diagonal, 1's on the superdiagonal, and 0's elsewhere:
+\[J_k(\lambda) = 
+\begin{pmatrix}
+\lambda & 1 & 0 & \cdots & 0 \\
+0 & \lambda & 1 & \cdots & 0 \\
+\vdots & \vdots & \ddots & \ddots & \vdots \\
+0 & 0 & \cdots & \lambda & 1 \\
+0 & 0 & \cdots & 0 & \lambda
+\end{pmatrix}
+\]
+\end{definition}
+
+\section{Matrix Decompositions}
+
+\subsection{Singular Value Decomposition}
+The singular value decomposition (SVD) is one of the most powerful tools in matrix analysis with applications ranging from image processing to quantum mechanics.
+
+\begin{theorem}[Singular Value Decomposition]
+Any $m \times n$ complex matrix $A$ can be factored as $A = U\Sigma V^*$ where $U$ is an $m \times m$ unitary matrix, $\Sigma$ is an $m \times n$ diagonal matrix with non-negative real numbers on the diagonal, and $V^*$ is the conjugate transpose of an $n \times n$ unitary matrix $V$.
+\end{theorem}
+
+\begin{example}
+Consider the matrix $A = \begin{pmatrix} 3 & 2 \\ 2 & 3 \end{pmatrix}$. Its SVD is $A = U\Sigma V^*$ where:
+\begin{align*}
+U &= \begin{pmatrix} \frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}} \\ \frac{1}{\sqrt{2}} & -\frac{1}{\sqrt{2}} \end{pmatrix} \\
+\Sigma &= \begin{pmatrix} 5 & 0 \\ 0 & 1 \end{pmatrix} \\
+V &= \begin{pmatrix} \frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}} \\ \frac{1}{\sqrt{2}} & -\frac{1}{\sqrt{2}} \end{pmatrix}
+\end{align*}
+\end{example}
+
+\subsection{Schur Decomposition}
+The Schur decomposition allows us to represent any square matrix in an upper triangular form, providing insight into its spectral properties.
+
+\begin{theorem}[Schur Decomposition]
+For any square complex matrix $A$, there exists a unitary matrix $U$ such that $U^*AU = T$, where $T$ is upper triangular.
+\end{theorem}
+
+\subsection{QR Decomposition}
+The QR decomposition expresses a matrix as the product of an orthogonal matrix and an upper triangular matrix, with applications in solving linear systems and least-squares problems.
+
+\begin{theorem}[QR Decomposition]
+Any real square matrix $A$ can be decomposed as $A = QR$, where $Q$ is orthogonal and $R$ is upper triangular.
+\end{theorem}
+
+\begin{algorithm}
+\caption{Gram-Schmidt Process for QR Decomposition}
+\begin{algorithmic}[1]
+\Require Matrix $A$ with columns $\mathbf{a}_1, \mathbf{a}_2, \ldots, \mathbf{a}_n$
+\Ensure Orthogonal matrix $Q$ and upper triangular matrix $R$ such that $A = QR$
+\State Set $\mathbf{u}_1 = \mathbf{a}_1$
+\State Set $\mathbf{e}_1 = \frac{\mathbf{u}_1}{||\mathbf{u}_1||}$
+\For{$k = 2$ to $n$}
+    \State $\mathbf{u}_k = \mathbf{a}_k - \sum_{j=1}^{k-1} (\mathbf{e}_j^T \mathbf{a}_k) \mathbf{e}_j$
+    \State $\mathbf{e}_k = \frac{\mathbf{u}_k}{||\mathbf{u}_k||}$
+\EndFor
+\State $Q = [\mathbf{e}_1, \mathbf{e}_2, \ldots, \mathbf{e}_n]$
+\State $R_{ij} = 
+\begin{cases}
+\mathbf{e}_i^T \mathbf{a}_j & \text{if } i \leq j \\
+0 & \text{if } i > j
+\end{cases}$
+\end{algorithmic}
+\end{algorithm}
+
+\section{Functional Calculus}
+
+\subsection{Matrix Functions}
+The concept of functional calculus extends scalar functions to matrices, providing powerful tools for analyzing and manipulating matrices.
+
+\begin{definition}
+For a function $f$ analytic on the spectrum of a matrix $A$, the \textbf{matrix function} $f(A)$ is defined as:
+\[f(A) = \frac{1}{2\pi i} \oint_\Gamma f(z)(zI - A)^{-1} dz\]
+where $\Gamma$ is a contour enclosing the spectrum of $A$.
+\end{definition}
+
+\begin{example}
+The matrix exponential $e^A$ can be defined as:
+\[e^A = \sum_{k=0}^{\infty} \frac{A^k}{k!}\]
+This series always converges for any square matrix $A$.
+\end{example}
+
+\begin{theorem}
+If $A$ has the Jordan decomposition $P^{-1}AP = J$, then $f(A) = Pf(J)P^{-1}$.
+\end{theorem}
+
+\section{Matrix Analysis in Quantum Mechanics}
+
+\subsection{Density Matrices and Observable Operators}
+Matrices play a fundamental role in quantum mechanics, where physical states are represented by vectors in a Hilbert space and observables by Hermitian operators.
+
+\begin{definition}
+A \textbf{density matrix} $\rho$ is a positive semidefinite Hermitian matrix with trace 1, representing the statistical state of a quantum system.
+\end{definition}
+
+\begin{theorem}
+Any quantum measurement can be described by a set of positive semidefinite Hermitian matrices $\{E_m\}$ such that $\sum_m E_m = I$, where the probability of outcome $m$ given state $\rho$ is $p(m) = \text{Tr}(E_m \rho)$.
+\end{theorem}
+
+\section{Advanced Exercises}
+
+\begin{problem}
+Let $A$ be an $n \times n$ complex matrix. Prove that there exists a nonzero vector $\mathbf{v} \in \mathbb{C}^n$ such that $\mathbf{v}^*A\mathbf{v} = 0$ if and only if $A$ is not positive definite.
+\end{problem}
+
+\begin{problem}
+For $A \in M_n(\mathbb{C})$, let $\sigma(A)$ denote its spectrum (the set of its eigenvalues). Prove that $\sigma(AB) \setminus \{0\} = \sigma(BA) \setminus \{0\}$ for any $A, B \in M_n(\mathbb{C})$.
+\end{problem}
+
+\begin{problem}
+Let $A$ be an $n \times n$ matrix and $f: \mathbb{C} \to \mathbb{C}$ an analytic function defined on an open set containing $\sigma(A)$. Prove that $\sigma(f(A)) = f(\sigma(A))$.
+\end{problem}
+
+\begin{problem}
+Prove that a matrix $A$ is normal if and only if $||Ax|| = ||A^*x||$ for all vectors $x$.
+\end{problem}
+
+\begin{problem}
+Let $A$ be an $n \times n$ complex matrix with $\text{Tr}(A^k) = 0$ for $k = 1, 2, \ldots, n$. Prove that $A$ is nilpotent.
+\end{problem}
+
+\begin{problem}
+Let $A$ be an $n \times n$ matrix with real entries. Prove that if $A^T A = A A^T$, then $A$ can be diagonalized by an orthogonal matrix.
+\end{problem}
+
+\begin{problem}
+Let $A$ and $B$ be $n \times n$ matrices. Prove that if $AB - BA = I$, then $A$ and $B$ cannot both be finite-dimensional matrices.
+\end{problem}
+
+\begin{problem}
+Let $A$ be a normal matrix and $||A||$ its spectral norm. Prove that $||A^k|| = ||A||^k$ for any positive integer $k$.
+\end{problem}
+
+\begin{problem}
+Prove that the determinant of a block matrix
+$\begin{pmatrix} A & B \\ C & D \end{pmatrix}$
+equals $\det(AD - ACA^{-1}B)$ when $A$ is invertible.
+\end{problem}
+
+\begin{problem}
+Let $A$ be an $n \times n$ matrix and define $\Phi_A: M_n(\mathbb{C}) \to M_n(\mathbb{C})$ by $\Phi_A(X) = AX - XA$. Determine the characteristic polynomial of $\Phi_A$.
+\end{problem}
+
+\begin{problem}[Research-Level]
+The Toeplitz matrices form an algebra of matrices $(a_{i-j})_{i,j=1}^n$ where the entries along each diagonal are constant. Investigate the spectral properties of Toeplitz matrices and their connection to Fourier analysis, particularly:
+\begin{enumerate}[label=(\alph*)]
+\item Find the asymptotic distribution of eigenvalues for large Toeplitz matrices.
+\item Determine conditions under which a Toeplitz matrix is invertible.
+\item Investigate the relationship between Toeplitz matrices and circulant matrices.
+\end{enumerate}
+\end{problem}
+
+\begin{problem}[Application to Differential Equations]
+Consider a system of linear differential equations $\dot{\mathbf{x}} = A\mathbf{x}$. Investigate:
+\begin{enumerate}[label=(\alph*)]
+\item The relationship between the stability of the system and the eigenvalues of $A$.
+\item The solution in terms of the matrix exponential $e^{At}$.
+\item The behavior when $A$ is not diagonalizable.
+\end{enumerate}
+\end{problem}
+
+\begin{problem}[Quantum Information Theory]
+For a $2 \times 2$ density matrix $\rho$, the von Neumann entropy is defined as $S(\rho) = -\text{Tr}(\rho \log \rho)$.
+\begin{enumerate}[label=(\alph*)]
+\item Express $S(\rho)$ in terms of the eigenvalues of $\rho$.
+\item Prove that $S(\rho) = 0$ if and only if $\rho$ is a pure state (i.e., $\rho^2 = \rho$).
+\item For a bipartite quantum system with density matrix $\rho_{AB}$, define the reduced density matrix $\rho_A = \text{Tr}_B(\rho_{AB})$. Prove that if the system is in a pure state, then $S(\rho_A) = S(\rho_B)$.
+\end{enumerate}
+\end{problem}
+
+\section{Further Reading}
+
+\begin{itemize}
+\item Horn, R. A., \& Johnson, C. R. (2012). \textit{Matrix Analysis} (2nd ed.). Cambridge University Press.
+\item Golub, G. H., \& Van Loan, C. F. (2013). \textit{Matrix Computations} (4th ed.). Johns Hopkins University Press.
+\item Bhatia, R. (1997). \textit{Matrix Analysis}. Springer.
+\item Trefethen, L. N., \& Bau III, D. (1997). \textit{Numerical Linear Algebra}. SIAM.
+\item Lang, S. (1987). \textit{Linear Algebra} (3rd ed.). Springer.
+\end{itemize}
+
+\end{document} 

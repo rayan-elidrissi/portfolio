@@ -24,3 +24,9 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Temporarily disable all animations and transitions during window resize */
+.resize-animation-stopper * {
+  animation: none !important;
+  transition: none !important;
+}

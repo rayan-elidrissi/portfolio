@@ -1,0 +1,322 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+
+\colorlet{lcfree}{black}
+\colorlet{lcexample}{green!65!black}
+\colorlet{lctheorem}{blue!70!black}
+\colorlet{lcproposition}{blue!70!black}
+\colorlet{lclemma}{blue!70!black}
+\colorlet{lcproblem}{red!80!black}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{problem}{Problem}[section]
+
+\title{Limits and Continuity: Foundations of Analysis}
+\author{MIT Mathematics Department}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Introduction to Limits}
+
+\subsection{Historical Development}
+
+The rigorous treatment of limits began with Cauchy in the early 19th century and was refined by Weierstrass later in the century. The concept of a limit is fundamental to calculus and mathematical analysis, providing the foundation for derivatives, integrals, and convergence of sequences and series.
+
+\subsection{Limits of Functions}
+
+\begin{definition}[$\varepsilon$-$\delta$ Definition of a Limit]
+Let $f: D \to \mathbb{R}$ be a function defined on a domain $D \subset \mathbb{R}$, and let $c$ be a point such that $c$ is an accumulation point of $D$. We say that the limit of $f(x)$ as $x$ approaches $c$ is $L$, written as
+\begin{equation}
+\lim_{x \to c} f(x) = L
+\end{equation}
+if for every $\varepsilon > 0$, there exists a $\delta > 0$ such that for all $x \in D$ with $0 < |x - c| < \delta$, we have $|f(x) - L| < \varepsilon$.
+\end{definition}
+
+\begin{remark}
+Note that the definition does not require $f$ to be defined at $c$. The limit concerns the behavior of $f(x)$ as $x$ gets arbitrarily close to $c$, but not at $c$ itself.
+\end{remark}
+
+\begin{theorem}[Uniqueness of Limits]
+If a limit exists, it is unique.
+\end{theorem}
+
+\begin{proof}
+Suppose $\lim_{x \to c} f(x) = L_1$ and $\lim_{x \to c} f(x) = L_2$. Let $\varepsilon > 0$ be arbitrary. By the definition of limits, there exist $\delta_1, \delta_2 > 0$ such that:
+\begin{align*}
+|f(x) - L_1| < \frac{\varepsilon}{2} \quad \text{whenever} \quad 0 < |x - c| < \delta_1 \\
+|f(x) - L_2| < \frac{\varepsilon}{2} \quad \text{whenever} \quad 0 < |x - c| < \delta_2
+\end{align*}
+
+Let $\delta = \min(\delta_1, \delta_2)$. Then for any $x$ with $0 < |x - c| < \delta$, we have:
+\begin{align*}
+|L_1 - L_2| &= |L_1 - f(x) + f(x) - L_2| \\
+&\leq |L_1 - f(x)| + |f(x) - L_2| \\
+&< \frac{\varepsilon}{2} + \frac{\varepsilon}{2} = \varepsilon
+\end{align*}
+
+Since $\varepsilon > 0$ was arbitrary, we must have $|L_1 - L_2| = 0$, thus $L_1 = L_2$.
+\end{proof}
+
+\subsection{One-sided Limits}
+
+\begin{definition}[One-sided Limits]
+Let $f: D \to \mathbb{R}$ be a function and $c$ a point such that $(c - \delta, c) \cap D \neq \emptyset$ for all $\delta > 0$.
+\begin{enumerate}[label=(\roman*)]
+\item The left-hand limit of $f(x)$ as $x$ approaches $c$, denoted by $\lim_{x \to c^-} f(x) = L$, exists if for every $\varepsilon > 0$, there exists a $\delta > 0$ such that $|f(x) - L| < \varepsilon$ for all $x \in D$ with $c - \delta < x < c$.
+\item The right-hand limit of $f(x)$ as $x$ approaches $c$, denoted by $\lim_{x \to c^+} f(x) = L$, exists if for every $\varepsilon > 0$, there exists a $\delta > 0$ such that $|f(x) - L| < \varepsilon$ for all $x \in D$ with $c < x < c + \delta$.
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Relationship Between Limits and One-sided Limits]
+Let $f$ be a function defined in a neighborhood of $c$, except possibly at $c$ itself. Then $\lim_{x \to c} f(x) = L$ if and only if both $\lim_{x \to c^-} f(x) = L$ and $\lim_{x \to c^+} f(x) = L$.
+\end{theorem}
+
+\begin{example}[Function with Different One-sided Limits]
+Consider the function
+\begin{equation}
+f(x) = \begin{cases}
+x & \text{if } x < 0 \\
+x^2 & \text{if } x \geq 0
+\end{cases}
+\end{equation}
+
+At $x = 0$, we have $\lim_{x \to 0^-} f(x) = \lim_{x \to 0^-} x = 0$ and $\lim_{x \to 0^+} f(x) = \lim_{x \to 0^+} x^2 = 0$. Since both one-sided limits exist and are equal, $\lim_{x \to 0} f(x) = 0$.
+\end{example}
+
+\subsection{Limits at Infinity}
+
+\begin{definition}[Limit at Infinity]
+Let $f: D \to \mathbb{R}$ be a function defined on a domain $D$ that contains an unbounded subset of $\mathbb{R}$.
+\begin{enumerate}[label=(\roman*)]
+\item We say that $\lim_{x \to \infty} f(x) = L$ if for every $\varepsilon > 0$, there exists an $M > 0$ such that $|f(x) - L| < \varepsilon$ for all $x \in D$ with $x > M$.
+\item We say that $\lim_{x \to -\infty} f(x) = L$ if for every $\varepsilon > 0$, there exists an $M < 0$ such that $|f(x) - L| < \varepsilon$ for all $x \in D$ with $x < M$.
+\end{enumerate}
+\end{definition}
+
+\begin{example}[Limit at Infinity]
+For the function $f(x) = \frac{2x^2 + 3x - 5}{x^2 - 1}$, we have
+\begin{equation}
+\lim_{x \to \infty} f(x) = \lim_{x \to \infty} \frac{2x^2 + 3x - 5}{x^2 - 1} = \lim_{x \to \infty} \frac{2 + \frac{3}{x} - \frac{5}{x^2}}{1 - \frac{1}{x^2}} = \frac{2 + 0 - 0}{1 - 0} = 2
+\end{equation}
+\end{example}
+
+\begin{definition}[Infinite Limits]
+Let $f: D \to \mathbb{R}$ be a function defined on a domain $D$, and let $c$ be a point such that $c$ is an accumulation point of $D$.
+\begin{enumerate}[label=(\roman*)]
+\item We say that $\lim_{x \to c} f(x) = \infty$ if for every $M > 0$, there exists a $\delta > 0$ such that $f(x) > M$ for all $x \in D$ with $0 < |x - c| < \delta$.
+\item We say that $\lim_{x \to c} f(x) = -\infty$ if for every $M < 0$, there exists a $\delta > 0$ such that $f(x) < M$ for all $x \in D$ with $0 < |x - c| < \delta$.
+\end{enumerate}
+\end{definition}
+
+\begin{example}[Infinite Limit]
+For the function $f(x) = \frac{1}{x^2}$, we have $\lim_{x \to 0} f(x) = \infty$ since $f(x)$ grows arbitrarily large as $x$ approaches 0.
+\end{example}
+
+\section{Properties of Limits}
+
+\begin{theorem}[Algebraic Properties of Limits]
+Let $f$ and $g$ be functions such that $\lim_{x \to c} f(x) = L$ and $\lim_{x \to c} g(x) = M$. Then:
+\begin{enumerate}[label=(\roman*)]
+\item $\lim_{x \to c} [f(x) + g(x)] = L + M$ (Sum Rule)
+\item $\lim_{x \to c} [f(x) - g(x)] = L - M$ (Difference Rule)
+\item $\lim_{x \to c} [f(x) \cdot g(x)] = L \cdot M$ (Product Rule)
+\item $\lim_{x \to c} \frac{f(x)}{g(x)} = \frac{L}{M}$ if $M \neq 0$ (Quotient Rule)
+\item $\lim_{x \to c} [k \cdot f(x)] = k \cdot L$ for any constant $k$ (Constant Multiple Rule)
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Squeeze Theorem]
+Let $f$, $g$, and $h$ be functions such that $g(x) \leq f(x) \leq h(x)$ for all $x$ in a neighborhood of $c$, except possibly at $c$. If $\lim_{x \to c} g(x) = \lim_{x \to c} h(x) = L$, then $\lim_{x \to c} f(x) = L$.
+\end{theorem}
+
+\begin{example}[Application of Squeeze Theorem]
+Consider the function $f(x) = x^2 \sin\left(\frac{1}{x}\right)$ for $x \neq 0$. Since $-1 \leq \sin\left(\frac{1}{x}\right) \leq 1$ for all $x \neq 0$, we have
+\begin{equation}
+-x^2 \leq x^2 \sin\left(\frac{1}{x}\right) \leq x^2
+\end{equation}
+As $x \to 0$, both $-x^2$ and $x^2$ approach 0. By the Squeeze Theorem, $\lim_{x \to 0} f(x) = 0$.
+\end{example}
+
+\begin{theorem}[Composition of Limits]
+Let $f$ and $g$ be functions such that $\lim_{x \to c} g(x) = L$ and $f$ is continuous at $L$. Then
+\begin{equation}
+\lim_{x \to c} f(g(x)) = f\left(\lim_{x \to c} g(x)\right) = f(L)
+\end{equation}
+\end{theorem}
+
+\section{Continuity}
+
+\subsection{Definition and Basic Properties}
+
+\begin{definition}[Continuity at a Point]
+A function $f: D \to \mathbb{R}$ is continuous at a point $c \in D$ if
+\begin{equation}
+\lim_{x \to c} f(x) = f(c)
+\end{equation}
+In other words, $f$ is continuous at $c$ if for every $\varepsilon > 0$, there exists a $\delta > 0$ such that $|f(x) - f(c)| < \varepsilon$ whenever $x \in D$ and $|x - c| < \delta$.
+\end{definition}
+
+\begin{definition}[Continuity on a Set]
+A function $f: D \to \mathbb{R}$ is continuous on a set $S \subset D$ if it is continuous at each point of $S$.
+\end{definition}
+
+\begin{theorem}[Algebraic Properties of Continuous Functions]
+If $f$ and $g$ are continuous at a point $c$, then:
+\begin{enumerate}[label=(\roman*)]
+\item $f + g$ is continuous at $c$
+\item $f - g$ is continuous at $c$
+\item $f \cdot g$ is continuous at $c$
+\item $\frac{f}{g}$ is continuous at $c$ if $g(c) \neq 0$
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Composition of Continuous Functions]
+If $g$ is continuous at $c$ and $f$ is continuous at $g(c)$, then the composition $f \circ g$ is continuous at $c$.
+\end{theorem}
+
+\begin{example}[Examples of Continuous Functions]
+\begin{enumerate}[label=(\alph*)]
+\item Polynomial functions are continuous everywhere on $\mathbb{R}$.
+\item Rational functions $r(x) = \frac{p(x)}{q(x)}$, where $p$ and $q$ are polynomials, are continuous at all points where $q(x) \neq 0$.
+\item The functions $\sin x$, $\cos x$, and $e^x$ are continuous everywhere on $\mathbb{R}$.
+\item The logarithm function $\ln x$ is continuous on $(0, \infty)$.
+\end{enumerate}
+\end{example}
+
+\subsection{Types of Discontinuities}
+
+\begin{definition}[Types of Discontinuities]
+Let $f$ be a function defined in a neighborhood of $c$. If $f$ is not continuous at $c$, then $c$ is a point of discontinuity, which can be classified as:
+\begin{enumerate}[label=(\roman*)]
+\item A removable discontinuity if $\lim_{x \to c} f(x)$ exists but either $f(c)$ is undefined or $f(c) \neq \lim_{x \to c} f(x)$.
+\item A jump discontinuity if the one-sided limits $\lim_{x \to c^-} f(x)$ and $\lim_{x \to c^+} f(x)$ both exist but are unequal.
+\item An infinite discontinuity if at least one of the one-sided limits is infinite.
+\item An essential discontinuity if at least one of the one-sided limits does not exist (even as an infinite limit).
+\end{enumerate}
+\end{definition}
+
+\begin{example}[Examples of Discontinuities]
+\begin{enumerate}[label=(\alph*)]
+\item The function $f(x) = \frac{\sin x}{x}$ for $x \neq 0$, with $f(0) = 0$, has a removable discontinuity at $x = 0$ because $\lim_{x \to 0} \frac{\sin x}{x} = 1 \neq f(0)$.
+\item The Heaviside step function $H(x) = \begin{cases} 0 & \text{if } x < 0 \\ 1 & \text{if } x \geq 0 \end{cases}$ has a jump discontinuity at $x = 0$ because $\lim_{x \to 0^-} H(x) = 0$ and $\lim_{x \to 0^+} H(x) = 1$.
+\item The function $f(x) = \frac{1}{x}$ has an infinite discontinuity at $x = 0$ because $\lim_{x \to 0^-} f(x) = -\infty$ and $\lim_{x \to 0^+} f(x) = \infty$.
+\item The function $f(x) = \sin\left(\frac{1}{x}\right)$ for $x \neq 0$ has an essential discontinuity at $x = 0$ because $\lim_{x \to 0} f(x)$ does not exist.
+\end{enumerate}
+\end{example}
+
+\section{Theorems on Continuous Functions}
+
+\subsection{Properties of Functions Continuous on Closed Intervals}
+
+\begin{theorem}[Intermediate Value Theorem]
+If $f: [a, b] \to \mathbb{R}$ is continuous on $[a, b]$ and $f(a) \neq f(b)$, then for any value $y$ between $f(a)$ and $f(b)$, there exists at least one point $c \in (a, b)$ such that $f(c) = y$.
+\end{theorem}
+
+\begin{corollary}
+If $f: [a, b] \to \mathbb{R}$ is continuous with $f(a) < 0$ and $f(b) > 0$ (or vice versa), then there exists at least one point $c \in (a, b)$ such that $f(c) = 0$.
+\end{corollary}
+
+\begin{theorem}[Extreme Value Theorem]
+If $f: [a, b] \to \mathbb{R}$ is continuous on $[a, b]$, then $f$ attains both a maximum and a minimum value on $[a, b]$. That is, there exist points $c, d \in [a, b]$ such that $f(c) \leq f(x) \leq f(d)$ for all $x \in [a, b]$.
+\end{theorem}
+
+\begin{theorem}[Uniform Continuity]
+If $f: [a, b] \to \mathbb{R}$ is continuous on $[a, b]$, then $f$ is uniformly continuous on $[a, b]$. That is, for every $\varepsilon > 0$, there exists a $\delta > 0$ such that $|f(x) - f(y)| < \varepsilon$ whenever $x, y \in [a, b]$ and $|x - y| < \delta$.
+\end{theorem}
+
+\section{Continuity in Higher Dimensions}
+
+\subsection{Continuity of Multivariable Functions}
+
+\begin{definition}[Continuity of Multivariable Functions]
+Let $f: D \to \mathbb{R}$ be a function defined on a domain $D \subset \mathbb{R}^n$. We say that $f$ is continuous at a point $\mathbf{c} = (c_1, c_2, \ldots, c_n) \in D$ if for every $\varepsilon > 0$, there exists a $\delta > 0$ such that $|f(\mathbf{x}) - f(\mathbf{c})| < \varepsilon$ whenever $\mathbf{x} \in D$ and $\|\mathbf{x} - \mathbf{c}\| < \delta$, where $\|\mathbf{x} - \mathbf{c}\|$ is the Euclidean distance.
+\end{definition}
+
+\begin{theorem}[Continuity of Partial Derivatives]
+Let $f: D \to \mathbb{R}$ be a function defined on an open set $D \subset \mathbb{R}^n$. If all partial derivatives of $f$ exist and are continuous at a point $\mathbf{c} \in D$, then $f$ is differentiable at $\mathbf{c}$, and hence continuous at $\mathbf{c}$.
+\end{theorem}
+
+\section{Asymptotic Analysis and Limits}
+
+\subsection{Asymptotic Notations}
+
+\begin{definition}[Big O Notation]
+Let $f$ and $g$ be functions defined on some subset of the real numbers. We write $f(x) = O(g(x))$ as $x \to a$ if there exist positive constants $M$ and $\delta$ such that $|f(x)| \leq M |g(x)|$ for all $x$ with $|x - a| < \delta$.
+\end{definition}
+
+\begin{definition}[Little o Notation]
+Let $f$ and $g$ be functions defined on some subset of the real numbers. We write $f(x) = o(g(x))$ as $x \to a$ if
+\begin{equation}
+\lim_{x \to a} \frac{f(x)}{g(x)} = 0
+\end{equation}
+\end{definition}
+
+\begin{example}[Asymptotic Expansion]
+The function $f(x) = \frac{\sin x}{x}$ has the asymptotic expansion
+\begin{equation}
+\frac{\sin x}{x} = 1 - \frac{x^2}{3!} + \frac{x^4}{5!} - \cdots
+\end{equation}
+as $x \to 0$. Thus, $\frac{\sin x}{x} = 1 + O(x^2)$ as $x \to 0$.
+\end{example}
+
+\section{Advanced Exercises}
+
+\begin{problem}
+Prove that if $f$ and $g$ are continuous on $[a, b]$ and $f(a) < g(a)$ and $f(b) > g(b)$, then there exists a point $c \in (a, b)$ such that $f(c) = g(c)$.
+\end{problem}
+
+\begin{problem}
+Let $f: \mathbb{R} \to \mathbb{R}$ be a continuous function. Prove that the set $f^{-1}(0) = \{x \in \mathbb{R} : f(x) = 0\}$ is closed.
+\end{problem}
+
+\begin{problem}
+Construct a function that is continuous at precisely one point.
+\end{problem}
+
+\begin{problem}
+Show that the function $f(x, y) = \frac{xy}{x^2 + y^2}$ for $(x, y) \neq (0, 0)$ and $f(0, 0) = 0$ is not continuous at the origin, even though it is continuous along every straight line through the origin.
+\end{problem}
+
+\begin{problem}
+Prove that if $f: [a, b] \to [a, b]$ is continuous, then $f$ has at least one fixed point, i.e., there exists $c \in [a, b]$ such that $f(c) = c$.
+\end{problem}
+
+\begin{problem}
+Let $f: \mathbb{R} \to \mathbb{R}$ be continuous. Prove that if $\lim_{x \to \infty} f(x) = \lim_{x \to -\infty} f(x) = L$, then $f$ attains a minimum value or a maximum value (or both).
+\end{problem}
+
+\section{Further Reading}
+
+\begin{itemize}
+\item Rudin, W. (1976). \textit{Principles of Mathematical Analysis} (3rd ed.). McGraw-Hill.
+\item Apostol, T. M. (1974). \textit{Mathematical Analysis} (2nd ed.). Addison-Wesley.
+\item Spivak, M. (2008). \textit{Calculus} (4th ed.). Publish or Perish.
+\item Bartle, R. G., \& Sherbert, D. R. (2011). \textit{Introduction to Real Analysis} (4th ed.). Wiley.
+\item Tao, T. (2016). \textit{Analysis I} (3rd ed.). Hindustan Book Agency.
+\end{itemize}
+
+\end{document} 
