@@ -1,8 +1,13 @@
 import type { NextConfig } from "next";
 
+// Determine if we're in a GitHub Pages context
+const isGitHubPages = process.env.GITHUB_ACTIONS || process.env.NODE_ENV === 'production';
+const repoName = 'portfolio';
+
 const nextConfig: NextConfig = {
   output: 'export',
-  basePath: process.env.GITHUB_ACTIONS && '/portfolio',
+  basePath: isGitHubPages ? `/${repoName}` : '',
+  assetPrefix: isGitHubPages ? `/${repoName}/` : '',
   images: {
     unoptimized: true,
   },
