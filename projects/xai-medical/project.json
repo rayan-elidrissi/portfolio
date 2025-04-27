@@ -1,0 +1,104 @@
+{
+  "title": "XAI Medical Image Analysis",
+  "shortDescription": "Explainable AI for medical image diagnostics",
+  "fullDescription": "This project implements explainable AI techniques for medical image diagnostics, providing transparency and interpretability in deep learning systems for healthcare applications.",
+  "technologies": ["TensorFlow", "PyTorch", "React", "Grad-CAM", "LIME", "SHAP"],
+  "thumbnail": "/images/projects/xai-medical.png",
+  "screenshots": [
+    {
+      "url": "/images/projects/xai-medical/screenshot1.png",
+      "caption": "XAI-assisted lung X-ray analysis"
+    },
+    {
+      "url": "/images/projects/xai-medical/screenshot2.png",
+      "caption": "Visual explanation of model decisions"
+    },
+    {
+      "url": "/images/projects/xai-medical/screenshot3.png",
+      "caption": "Comparative analysis of XAI methods"
+    }
+  ],
+  "features": [
+    {
+      "title": "Grad-CAM Visualization",
+      "description": "Gradient-weighted Class Activation Mapping highlights regions of medical images that influenced the model's decision"
+    },
+    {
+      "title": "LIME Integration",
+      "description": "Local Interpretable Model-agnostic Explanations provide interpretable explanations for individual predictions"
+    },
+    {
+      "title": "Diagnostic Confidence Metrics",
+      "description": "Quantitative measures of the model's confidence in its diagnostic assessments"
+    },
+    {
+      "title": "Interactive Exploration",
+      "description": "User interface for interactively exploring model explanations and manipulating inputs"
+    }
+  ],
+  "codeSnippets": [
+    {
+      "language": "python",
+      "description": "Implementing Grad-CAM for CNN interpretability",
+      "code": "def grad_cam(model, img_array, layer_name, class_idx):\n    # Create a model that maps the input image to the activations\n    # of the last conv layer and output predictions\n    grad_model = tf.keras.models.Model(\n        inputs=[model.inputs],\n        outputs=[model.get_layer(layer_name).output, model.output]\n    )\n    \n    # Compute gradient of the predicted class with respect to\n    # the activations of the last conv layer\n    with tf.GradientTape() as tape:\n        conv_outputs, predictions = grad_model(img_array)\n        loss = predictions[:, class_idx]\n    \n    # Extract filters and gradients\n    output = conv_outputs[0]\n    grads = tape.gradient(loss, conv_outputs)[0]\n    \n    # Weight and average feature maps with gradients\n    weights = tf.reduce_mean(grads, axis=(0, 1))\n    cam = tf.reduce_sum(tf.multiply(weights, output), axis=-1)\n    \n    # Process CAM\n    cam = tf.maximum(cam, 0) / tf.math.reduce_max(cam)\n    return cam.numpy()"
+    },
+    {
+      "language": "javascript",
+      "description": "Rendering heatmap overlay on medical images",
+      "code": "const renderHeatmap = (canvas, heatmapData, opacity = 0.5) => {\n  const ctx = canvas.getContext('2d');\n  const width = canvas.width;\n  const height = canvas.height;\n  \n  // Create a temporary canvas for the heatmap\n  const tempCanvas = document.createElement('canvas');\n  tempCanvas.width = width;\n  tempCanvas.height = height;\n  const tempCtx = tempCanvas.getContext('2d');\n  \n  // Create the heatmap image data\n  const imageData = tempCtx.createImageData(width, height);\n  \n  // Map heatmap values to colors\n  for (let i = 0; i < heatmapData.length; i++) {\n    for (let j = 0; j < heatmapData[0].length; j++) {\n      const value = heatmapData[i][j];\n      const idx = (i * width + j) * 4;\n      \n      // Apply a color scale (red for high values)\n      imageData.data[idx] = 255 * value; // R\n      imageData.data[idx + 1] = 0;       // G\n      imageData.data[idx + 2] = 0;       // B\n      imageData.data[idx + 3] = 255 * value * opacity; // Alpha\n    }\n  }\n  \n  tempCtx.putImageData(imageData, 0, 0);\n  ctx.drawImage(tempCanvas, 0, 0);\n}"
+    }
+  ],
+  "links": {
+    "demo": "/demos/xai-medical",
+    "github": "https://github.com/rayanidrissi/xai-medical",
+    "paper": "/docs/medical-image-analysis.pdf"
+  },
+  "team": [
+    {
+      "name": "Rayan El Idrissi",
+      "role": "Lead Researcher",
+      "avatar": "/images/me.png"
+    },
+    {
+      "name": "Dr. Sophie Martin",
+      "role": "Medical Advisor",
+      "avatar": "/images/team/sophie-martin.jpg"
+    },
+    {
+      "name": "Alexei Voronov",
+      "role": "ML Engineer",
+      "avatar": "/images/team/alexei-voronov.jpg"
+    }
+  ],
+  "timeline": {
+    "start": "2024-01-15",
+    "end": "2024-06-30",
+    "milestones": [
+      {
+        "date": "2024-01-15",
+        "title": "Project Inception",
+        "description": "Initial research and project planning"
+      },
+      {
+        "date": "2024-02-28",
+        "title": "Baseline Model Development",
+        "description": "Implementation of core CNN architecture for medical image analysis"
+      },
+      {
+        "date": "2024-04-15",
+        "title": "XAI Integration",
+        "description": "Implementation of Grad-CAM, LIME, and SHAP for model interpretability"
+      },
+      {
+        "date": "2024-05-30",
+        "title": "User Interface Development",
+        "description": "Creation of interactive dashboard for visualization and exploration"
+      },
+      {
+        "date": "2024-06-30",
+        "title": "Final Evaluation",
+        "description": "Comprehensive evaluation of model performance and interpretability"
+      }
+    ]
+  }
+} 

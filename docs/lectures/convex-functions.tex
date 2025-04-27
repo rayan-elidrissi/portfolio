@@ -1,0 +1,355 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+
+\pgfplotsset{compat=1.17}
+
+\colorlet{lcfree}{black}
+\colorlet{lcexample}{green!65!black}
+\colorlet{lctheorem}{blue!70!black}
+\colorlet{lcproposition}{blue!70!black}
+\colorlet{lclemma}{blue!70!black}
+\colorlet{lcproblem}{red!80!black}
+
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}{Example}[section]
+\newtheorem{problem}{Problem}[section]
+
+\title{Advanced Convex Analysis}
+\author{Rayan El Idrissi\\ENS Ulm - Mathematics Department}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Historical Development and Foundations}
+
+\subsection{Historical Evolution}
+The systematic study of convex sets and functions began with Hermann Minkowski's work in the late 19th century. His pioneering research laid the foundation for modern convex analysis. Later contributions by Werner Fenchel in the 1940s and R. Tyrrell Rockafellar in the 1960s developed the field into a powerful mathematical framework with applications across multiple disciplines.
+
+\subsection{Basic Definitions}
+
+\begin{definition}[Convex Set]
+A set $C \subseteq \mathbb{R}^n$ is \textbf{convex} if for any $x, y \in C$ and any $\lambda \in [0,1]$, the point $\lambda x + (1-\lambda)y \in C$.
+\end{definition}
+
+\begin{definition}[Convex Function]
+A function $f: C \to \mathbb{R}$ defined on a convex set $C \subseteq \mathbb{R}^n$ is \textbf{convex} if for all $x, y \in C$ and all $\lambda \in [0,1]$:
+\[f(\lambda x + (1-\lambda)y) \leq \lambda f(x) + (1-\lambda)f(y)\]
+The function is \textbf{strictly convex} if strict inequality holds whenever $x \neq y$ and $\lambda \in (0,1)$.
+\end{definition}
+
+\begin{definition}[Proper Convex Function]
+A convex function $f$ is \textbf{proper} if $f(x) > -\infty$ for all $x \in \text{dom}(f)$ and $\text{dom}(f) \neq \emptyset$.
+\end{definition}
+
+\begin{example}
+The following functions are convex:
+\begin{enumerate}[label=(\roman*)]
+\item Linear functions: $f(x) = a^T x + b$
+\item Exponential function: $f(x) = e^{ax}$ for any $a \in \mathbb{R}$
+\item Norms: $f(x) = \|x\|$ for any norm on $\mathbb{R}^n$
+\item Log-sum-exp: $f(x) = \log(\sum_{i=1}^n e^{x_i})$
+\item Maximum function: $f(x) = \max\{x_1, x_2, \ldots, x_n\}$
+\end{enumerate}
+\end{example}
+
+\begin{theorem}[Characterizations of Convexity]
+For a differentiable function $f: \mathbb{R}^n \to \mathbb{R}$, the following are equivalent:
+\begin{enumerate}[label=(\roman*)]
+\item $f$ is convex
+\item $f(y) \geq f(x) + \nabla f(x)^T(y-x)$ for all $x, y \in \text{dom}(f)$
+\item If $\text{dom}(f)$ is open, then $\nabla^2 f(x) \succeq 0$ for all $x \in \text{dom}(f)$
+\end{enumerate}
+\end{theorem}
+
+\section{Analytical Properties of Convex Functions}
+
+\subsection{Continuity and Differentiability}
+
+\begin{theorem}[Continuity]
+A convex function $f: \mathbb{R}^n \to \mathbb{R} \cup \{\infty\}$ is continuous on the interior of its domain.
+\end{theorem}
+
+\begin{theorem}[Subdifferentiability]
+For a convex function $f: \mathbb{R}^n \to \mathbb{R} \cup \{\infty\}$ and a point $x \in \text{int}(\text{dom}(f))$, the subdifferential $\partial f(x)$ is non-empty, convex, and compact.
+\end{theorem}
+
+\begin{definition}[Subdifferential]
+The \textbf{subdifferential} of a convex function $f$ at a point $x \in \text{dom}(f)$ is the set
+\[\partial f(x) = \{g \in \mathbb{R}^n : f(y) \geq f(x) + g^T(y-x) \text{ for all } y \in \text{dom}(f)\}\]
+Elements of $\partial f(x)$ are called \textbf{subgradients}.
+\end{definition}
+
+\begin{proposition}
+A convex function $f: \mathbb{R}^n \to \mathbb{R}$ is differentiable at $x$ if and only if $\partial f(x)$ contains exactly one element, in which case $\partial f(x) = \{\nabla f(x)\}$.
+\end{proposition}
+
+\begin{theorem}[Alexandrov's Theorem]
+A convex function $f: \mathbb{R}^n \to \mathbb{R}$ is twice differentiable almost everywhere on the interior of its domain.
+\end{theorem}
+
+\subsection{Conjugate Functions}
+
+\begin{definition}[Conjugate Function]
+The \textbf{conjugate} (or \textbf{Legendre-Fenchel transform}) of a function $f: \mathbb{R}^n \to \mathbb{R} \cup \{\infty\}$ is the function $f^*: \mathbb{R}^n \to \mathbb{R} \cup \{\infty\}$ defined by
+\[f^*(y) = \sup_{x \in \text{dom}(f)} \{y^T x - f(x)\}\]
+\end{definition}
+
+\begin{theorem}[Properties of Conjugate Functions]
+Let $f: \mathbb{R}^n \to \mathbb{R} \cup \{\infty\}$ be a proper, convex, and lower semicontinuous function. Then:
+\begin{enumerate}[label=(\roman*)]
+\item $f^*$ is proper, convex, and lower semicontinuous
+\item $(f^*)^* = f$ (Fenchel-Moreau theorem)
+\item If $f$ is strictly convex and differentiable, then $\nabla f^*(y) = (\nabla f)^{-1}(y)$
+\end{enumerate}
+\end{theorem}
+
+\begin{example}
+The conjugate of $f(x) = \frac{1}{2}\|x\|_2^2$ is $f^*(y) = \frac{1}{2}\|y\|_2^2$.
+\end{example}
+
+\begin{theorem}[Fenchel's Inequality]
+For a proper convex function $f$ and its conjugate $f^*$, we have
+\[f(x) + f^*(y) \geq x^T y\]
+for all $x \in \text{dom}(f)$ and $y \in \text{dom}(f^*)$. Equality holds if and only if $y \in \partial f(x)$.
+\end{theorem}
+
+\section{Convex Optimization}
+
+\subsection{Optimality Conditions}
+
+\begin{theorem}
+Let $f: \mathbb{R}^n \to \mathbb{R}$ be a convex function. Then $x^*$ is a global minimizer of $f$ if and only if $0 \in \partial f(x^*)$.
+\end{theorem}
+
+\begin{theorem}[KKT Conditions]
+Consider the convex optimization problem:
+\begin{align}
+\min_{x \in \mathbb{R}^n} &\quad f(x)\\
+\text{subject to} &\quad g_i(x) \leq 0, \quad i = 1, \ldots, m\\
+&\quad h_j(x) = 0, \quad j = 1, \ldots, p
+\end{align}
+where $f$ and $g_i$ are convex functions and $h_j$ are affine functions. If the problem satisfies Slater's condition, then $x^*$ is a global optimum if and only if there exist Lagrange multipliers $\lambda_i \geq 0$ and $\nu_j$ such that:
+\begin{align}
+0 &\in \partial f(x^*) + \sum_{i=1}^m \lambda_i \partial g_i(x^*) + \sum_{j=1}^p \nu_j \nabla h_j(x^*)\\
+\lambda_i g_i(x^*) &= 0, \quad i = 1, \ldots, m\\
+g_i(x^*) &\leq 0, \quad i = 1, \ldots, m\\
+h_j(x^*) &= 0, \quad j = 1, \ldots, p
+\end{align}
+\end{theorem}
+
+\subsection{Duality Theory}
+
+\begin{definition}[Lagrangian]
+For the constrained optimization problem above, the \textbf{Lagrangian} is the function $L: \mathbb{R}^n \times \mathbb{R}^m_+ \times \mathbb{R}^p \to \mathbb{R}$ defined by
+\[L(x, \lambda, \nu) = f(x) + \sum_{i=1}^m \lambda_i g_i(x) + \sum_{j=1}^p \nu_j h_j(x)\]
+\end{definition}
+
+\begin{definition}[Dual Function]
+The \textbf{dual function} is $g: \mathbb{R}^m_+ \times \mathbb{R}^p \to \mathbb{R} \cup \{-\infty\}$ defined by
+\[g(\lambda, \nu) = \inf_{x \in \mathbb{R}^n} L(x, \lambda, \nu)\]
+\end{definition}
+
+\begin{theorem}[Weak Duality]
+If the primal problem has optimal value $p^*$ and the dual problem has optimal value $d^*$, then $d^* \leq p^*$.
+\end{theorem}
+
+\begin{theorem}[Strong Duality]
+If the primal problem is convex and satisfies Slater's condition, then $d^* = p^*$.
+\end{theorem}
+
+\section{Advanced Topics in Convex Analysis}
+
+\subsection{Epigraphical Regularization}
+
+\begin{definition}[Epigraph]
+The \textbf{epigraph} of a function $f: \mathbb{R}^n \to \mathbb{R} \cup \{\infty\}$ is the set
+\[\text{epi}(f) = \{(x, t) \in \mathbb{R}^n \times \mathbb{R} : f(x) \leq t\}\]
+\end{definition}
+
+\begin{theorem}
+A function $f$ is convex if and only if its epigraph is a convex set.
+\end{theorem}
+
+\begin{definition}[Infimal Convolution]
+The \textbf{infimal convolution} of two functions $f$ and $g$ is defined as
+\[(f \square g)(x) = \inf_{y \in \mathbb{R}^n} \{f(y) + g(x-y)\}\]
+\end{definition}
+
+\begin{theorem}
+If $f$ and $g$ are proper, convex, and lower semicontinuous, then $(f \square g)^* = f^* + g^*$.
+\end{theorem}
+
+\subsection{Monotone Operators}
+
+\begin{definition}[Monotone Operator]
+A set-valued mapping $T: \mathbb{R}^n \rightrightarrows \mathbb{R}^n$ is \textbf{monotone} if
+\[(y_1 - y_2)^T(x_1 - x_2) \geq 0\]
+for all $x_1, x_2 \in \text{dom}(T)$ and all $y_1 \in T(x_1)$, $y_2 \in T(x_2)$.
+\end{definition}
+
+\begin{theorem}
+The subdifferential $\partial f$ of a proper, convex, lower semicontinuous function $f$ is a maximal monotone operator.
+\end{theorem}
+
+\begin{theorem}[Minty's Theorem]
+A monotone operator $T$ is maximal if and only if $\text{range}(I + T) = \mathbb{R}^n$.
+\end{theorem}
+
+\section{Applications of Convex Analysis}
+
+\subsection{Support Vector Machines}
+
+\begin{definition}[Support Vector Machine]
+The dual formulation of the soft-margin SVM problem is:
+\begin{align}
+\max_{\alpha \in \mathbb{R}^n} &\quad \sum_{i=1}^n \alpha_i - \frac{1}{2}\sum_{i,j=1}^n \alpha_i \alpha_j y_i y_j K(x_i, x_j)\\
+\text{subject to} &\quad 0 \leq \alpha_i \leq C, \quad i = 1, \ldots, n\\
+&\quad \sum_{i=1}^n \alpha_i y_i = 0
+\end{align}
+where $K$ is a positive definite kernel function.
+\end{definition}
+
+\subsection{Signal Processing}
+
+\begin{example}[LASSO]
+The LASSO (Least Absolute Shrinkage and Selection Operator) problem is:
+\begin{align}
+\min_{x \in \mathbb{R}^n} &\quad \frac{1}{2}\|Ax - b\|_2^2 + \lambda\|x\|_1
+\end{align}
+where $\lambda > 0$ is a regularization parameter. This is a convex optimization problem that promotes sparse solutions.
+\end{example}
+
+\subsection{Optimal Transport}
+
+\begin{definition}[Wasserstein Distance]
+Given two probability measures $\mu$ and $\nu$ on $\mathbb{R}^n$, the Wasserstein distance of order $p \geq 1$ is:
+\[W_p(\mu, \nu) = \left(\inf_{\pi \in \Pi(\mu, \nu)} \int_{\mathbb{R}^n \times \mathbb{R}^n} \|x - y\|^p \, d\pi(x, y)\right)^{1/p}\]
+where $\Pi(\mu, \nu)$ is the set of all transport plans (joint distributions with marginals $\mu$ and $\nu$).
+\end{definition}
+
+\begin{theorem}[Kantorovich-Rubinstein Duality]
+For $p = 1$, the Wasserstein distance admits the dual formulation:
+\[W_1(\mu, \nu) = \sup_{f \in \text{Lip}_1(\mathbb{R}^n)} \left\{\int_{\mathbb{R}^n} f \, d\mu - \int_{\mathbb{R}^n} f \, d\nu\right\}\]
+where $\text{Lip}_1(\mathbb{R}^n)$ is the set of 1-Lipschitz functions on $\mathbb{R}^n$.
+\end{theorem}
+
+\section{Advanced Exercises}
+
+\begin{problem}[Convexity of Perspective Functions]
+Let $f: \mathbb{R}^n \to \mathbb{R}$ be a convex function. Show that the perspective function $g: \mathbb{R}^n \times \mathbb{R}_{++} \to \mathbb{R}$ defined by $g(x, t) = t f(x/t)$ is also convex.
+\end{problem}
+
+\begin{problem}[Function Composition]
+Let $f: \mathbb{R}^n \to \mathbb{R}$ be a convex function, and let $g: \mathbb{R} \to \mathbb{R}$ be a convex, non-decreasing function. Prove that the composition $h(x) = g(f(x))$ is convex.
+\end{problem}
+
+\begin{problem}[Schur Convexity]
+A function $f: \mathbb{R}^n \to \mathbb{R}$ is Schur-convex if $f(x) \leq f(y)$ whenever $x$ is majorized by $y$. Prove that if $f(x) = \phi(x_1) + \phi(x_2) + \cdots + \phi(x_n)$ where $\phi: \mathbb{R} \to \mathbb{R}$ is convex, then $f$ is Schur-convex.
+\end{problem}
+
+\begin{problem}[Moreau Envelope]
+Let $f: \mathbb{R}^n \to \mathbb{R} \cup \{\infty\}$ be a proper, convex, lower semicontinuous function. The Moreau envelope of $f$ with parameter $\lambda > 0$ is defined as:
+\[M_\lambda f(x) = \min_{y \in \mathbb{R}^n} \left\{f(y) + \frac{1}{2\lambda}\|y - x\|_2^2\right\}\]
+Prove that:
+\begin{enumerate}[label=(\alph*)]
+\item $M_\lambda f$ is convex
+\item $M_\lambda f$ is continuously differentiable with $\nabla M_\lambda f(x) = \frac{1}{\lambda}(x - \text{prox}_{\lambda f}(x))$
+\item $M_\lambda f(x) \leq f(x)$ for all $x$
+\item $M_\lambda f$ converges pointwise to $f$ as $\lambda \to 0^+$
+\end{enumerate}
+\end{problem}
+
+\begin{problem}[Danskin's Theorem]
+Let $f(x, y): \mathbb{R}^n \times \mathbb{R}^m \to \mathbb{R}$ be continuous, and let $Y \subset \mathbb{R}^m$ be compact. Define $g(x) = \max_{y \in Y} f(x, y)$ and $Y(x) = \{y \in Y : f(x, y) = g(x)\}$.
+
+Prove that if $f(\cdot, y)$ is differentiable for each $y \in Y$ and $\nabla_x f(x, y)$ is continuous in $(x, y)$, then $g$ is directionally differentiable with
+\[g'(x; d) = \max_{y \in Y(x)} \nabla_x f(x, y)^T d\]
+\end{problem}
+
+\begin{problem}[Bregman Divergence]
+The Bregman divergence associated with a strictly convex, differentiable function $f$ is defined as:
+\[D_f(x, y) = f(x) - f(y) - \nabla f(y)^T(x - y)\]
+Prove the following properties:
+\begin{enumerate}[label=(\alph*)]
+\item $D_f(x, y) \geq 0$ with equality if and only if $x = y$
+\item $D_f$ is convex in its first argument
+\item $D_f$ satisfies the three-point identity: $D_f(x, z) = D_f(x, y) + D_f(y, z) + \nabla f(y)^T(x - z) - \nabla f(z)^T(x - y)$
+\end{enumerate}
+\end{problem}
+
+\begin{problem}[Research-Level: Ekeland's Variational Principle]
+Let $(X, d)$ be a complete metric space and $f: X \to \mathbb{R} \cup \{\infty\}$ be lower semicontinuous and bounded below. Prove Ekeland's variational principle: for any $\varepsilon > 0$ and any $x_0 \in X$ with $f(x_0) < \inf_X f + \varepsilon$, there exists $x_\varepsilon \in X$ such that:
+\begin{enumerate}[label=(\roman*)]
+\item $d(x_\varepsilon, x_0) \leq 1$
+\item $f(x_\varepsilon) \leq f(x_0)$
+\item For all $x \neq x_\varepsilon$, $f(x) > f(x_\varepsilon) - \varepsilon \cdot d(x, x_\varepsilon)$
+\end{enumerate}
+Investigate its applications to optimization problems without compactness assumptions.
+\end{problem}
+
+\begin{problem}[Research-Level: Yosida Approximation]
+For a maximal monotone operator $T: \mathbb{R}^n \rightrightarrows \mathbb{R}^n$ and $\lambda > 0$, the Yosida approximation is defined as $T_\lambda = \frac{1}{\lambda}(I - (I + \lambda T)^{-1})$. Prove that:
+\begin{enumerate}[label=(\alph*)]
+\item $T_\lambda$ is single-valued and $\frac{1}{\lambda}$-Lipschitz continuous
+\item For any $x \in \mathbb{R}^n$, $T_\lambda(x) \in T(J_\lambda(x))$ where $J_\lambda = (I + \lambda T)^{-1}$ is the resolvent
+\item $T_\lambda(x) \to T^0(x)$ as $\lambda \to 0^+$, where $T^0(x)$ is the element of $T(x)$ with minimal norm
+\end{enumerate}
+Discuss the applications of Yosida approximation to solving monotone inclusion problems.
+\end{problem}
+
+\begin{problem}[Application to Machine Learning]
+Consider the following logistic regression problem with $\ell_1$ regularization:
+\[\min_{w \in \mathbb{R}^n} \sum_{i=1}^m \log(1 + \exp(-y_i w^T x_i)) + \lambda \|w\|_1\]
+where $(x_i, y_i)$ are training examples with $y_i \in \{-1, 1\}$.
+\begin{enumerate}[label=(\alph*)]
+\item Prove that this problem is convex but non-smooth
+\item Develop a proximal gradient algorithm to solve this problem
+\item Analyze the convergence rate of your algorithm
+\end{enumerate}
+\end{problem}
+
+\begin{problem}[Entropic Regularization in Optimal Transport]
+Consider the discrete optimal transport problem between two discrete probability distributions $\mu = \sum_{i=1}^n a_i \delta_{x_i}$ and $\nu = \sum_{j=1}^m b_j \delta_{y_j}$ with cost matrix $C_{ij} = c(x_i, y_j)$. The entropically regularized problem is:
+\[\min_{P \in \Pi(\mu, \nu)} \sum_{i,j} P_{ij} C_{ij} - \varepsilon H(P)\]
+where $H(P) = -\sum_{i,j} P_{ij} \log P_{ij}$ is the entropy and $\varepsilon > 0$ is a regularization parameter.
+\begin{enumerate}[label=(\alph*)]
+\item Show that the dual problem is:
+\[\max_{f, g} \sum_i a_i f_i + \sum_j b_j g_j - \varepsilon \sum_{i,j} a_i b_j \exp\left(\frac{f_i + g_j - C_{ij}}{\varepsilon}\right)\]
+\item Derive the Sinkhorn algorithm for solving this problem
+\item Analyze how the solution behaves as $\varepsilon \to 0^+$
+\end{enumerate}
+\end{problem}
+
+\section{Further Reading}
+
+\begin{itemize}
+\item Rockafellar, R. T. (1970). \textit{Convex Analysis}. Princeton University Press.
+\item Borwein, J. M., \& Vanderwerff, J. D. (2010). \textit{Convex Functions: Constructions, Characterizations and Counterexamples}. Cambridge University Press.
+\item Hiriart-Urruty, J.-B., \& Lemaréchal, C. (2001). \textit{Fundamentals of Convex Analysis}. Springer.
+\item Boyd, S., \& Vandenberghe, L. (2004). \textit{Convex Optimization}. Cambridge University Press.
+\item Bauschke, H. H., \& Combettes, P. L. (2011). \textit{Convex Analysis and Monotone Operator Theory in Hilbert Spaces}. Springer.
+\item Peypouquet, J. (2015). \textit{Convex Optimization in Normed Spaces: Theory, Methods and Examples}. Springer.
+\end{itemize}
+
+\end{document} 

@@ -1,0 +1,342 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{mathrsfs}
+\usepackage{bbm}
+
+\pgfplotsset{compat=1.17}
+
+\colorlet{lcfree}{black}
+\colorlet{lcexample}{green!65!black}
+\colorlet{lctheorem}{blue!70!black}
+\colorlet{lcproposition}{blue!70!black}
+\colorlet{lclemma}{blue!70!black}
+\colorlet{lcproblem}{red!80!black}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{problem}{Problem}[section]
+
+\title{Complex Analysis: Theory and Applications}
+\author{MIT Mathematics Department}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Foundations of Complex Numbers}
+
+\subsection{Historical Development}
+
+The concept of complex numbers emerged from the mathematical investigations of 16th century algebraists, notably Gerolamo Cardano and Rafael Bombelli, who sought solutions to cubic equations. The formalization of complex numbers as a coherent mathematical system was later developed by mathematicians such as Leonhard Euler, Carl Friedrich Gauss, and Augustin-Louis Cauchy.
+
+\subsection{Algebraic Structure}
+
+\begin{definition}[Complex Number]
+A complex number $z$ is an ordered pair $(a,b)$ of real numbers, conventionally written as $z = a + bi$, where $i$ is the imaginary unit satisfying $i^2 = -1$. The set of all complex numbers is denoted by $\mathbb{C}$.
+\end{definition}
+
+\begin{definition}[Complex Operations]
+For complex numbers $z_1 = a_1 + b_1i$ and $z_2 = a_2 + b_2i$:
+\begin{align}
+z_1 + z_2 &= (a_1 + a_2) + (b_1 + b_2)i\\
+z_1 \cdot z_2 &= (a_1a_2 - b_1b_2) + (a_1b_2 + a_2b_1)i
+\end{align}
+\end{definition}
+
+\begin{theorem}
+The set of complex numbers $\mathbb{C}$ with the operations of addition and multiplication forms a field.
+\end{theorem}
+
+\begin{definition}[Complex Conjugate]
+The complex conjugate of $z = a + bi$ is $\overline{z} = a - bi$.
+\end{definition}
+
+\begin{proposition}
+For any complex numbers $z, w \in \mathbb{C}$:
+\begin{enumerate}[label=(\roman*)]
+\item $\overline{z + w} = \overline{z} + \overline{w}$
+\item $\overline{zw} = \overline{z} \cdot \overline{w}$
+\item $z\overline{z} = |z|^2 = a^2 + b^2$
+\item $\overline{\left(\frac{1}{z}\right)} = \frac{1}{\overline{z}}$ for $z \neq 0$
+\end{enumerate}
+\end{proposition}
+
+\subsection{Geometrical Representation}
+
+\begin{definition}[Modulus and Argument]
+For a complex number $z = a + bi$, the modulus of $z$ is defined as $|z| = \sqrt{a^2 + b^2}$. The argument of $z$, denoted $\arg(z)$, is the angle $\theta$ such that $a = |z|\cos\theta$ and $b = |z|\sin\theta$.
+\end{definition}
+
+\begin{definition}[Polar Form]
+A complex number $z$ can be expressed in polar form as $z = |z|e^{i\theta}$, where $\theta = \arg(z)$.
+\end{definition}
+
+\begin{theorem}[De Moivre's Formula]
+For any complex number $z = |z|e^{i\theta}$ and any integer $n$:
+\[z^n = |z|^n e^{in\theta} = |z|^n(\cos(n\theta) + i\sin(n\theta))\]
+\end{theorem}
+
+\section{Analytic Functions}
+
+\subsection{Complex Differentiation}
+
+\begin{definition}[Complex Differentiability]
+A function $f: \mathbb{C} \to \mathbb{C}$ is differentiable at a point $z_0 \in \mathbb{C}$ if the limit
+\[f'(z_0) = \lim_{z \to z_0} \frac{f(z) - f(z_0)}{z - z_0}\]
+exists.
+\end{definition}
+
+\begin{theorem}[Cauchy-Riemann Equations]
+Let $f(z) = u(x,y) + iv(x,y)$ where $u$ and $v$ are real-valued functions and $z = x + iy$. Then $f$ is differentiable at $z_0 = x_0 + iy_0$ if and only if $u$ and $v$ are differentiable at $(x_0, y_0)$ and satisfy the Cauchy-Riemann equations:
+\begin{align}
+\frac{\partial u}{\partial x} = \frac{\partial v}{\partial y}, \quad \frac{\partial u}{\partial y} = -\frac{\partial v}{\partial x}
+\end{align}
+\end{theorem}
+
+\begin{definition}[Holomorphic Function]
+A function $f: \mathbb{C} \to \mathbb{C}$ is holomorphic on an open set $U \subset \mathbb{C}$ if it is differentiable at every point in $U$. If $f$ is holomorphic on the entire complex plane, it is called entire.
+\end{definition}
+
+\begin{theorem}
+A holomorphic function $f$ on an open set $U$ has derivatives of all orders on $U$.
+\end{theorem}
+
+\begin{example}
+The exponential function $f(z) = e^z = e^x(\cos y + i\sin y)$ is entire, as are polynomials and power series within their radius of convergence.
+\end{example}
+
+\subsection{Power Series and Analytic Functions}
+
+\begin{definition}[Power Series]
+A power series centered at $a \in \mathbb{C}$ is an expression of the form
+\[\sum_{n=0}^{\infty} c_n (z-a)^n\]
+where $c_n \in \mathbb{C}$.
+\end{definition}
+
+\begin{theorem}[Radius of Convergence]
+For a power series $\sum_{n=0}^{\infty} c_n (z-a)^n$, there exists $R \in [0, \infty]$, called the radius of convergence, such that the series converges absolutely if $|z-a| < R$ and diverges if $|z-a| > R$.
+\end{theorem}
+
+\begin{definition}[Analytic Function]
+A function $f$ is analytic at a point $a$ if it can be represented by a power series in some neighborhood of $a$. That is, there exist complex coefficients $c_n$ such that
+\[f(z) = \sum_{n=0}^{\infty} c_n (z-a)^n\]
+for all $z$ in some disk $|z-a| < R$.
+\end{definition}
+
+\begin{theorem}
+A function is analytic on an open set $U$ if and only if it is holomorphic on $U$.
+\end{theorem}
+
+\begin{theorem}[Taylor Series]
+If $f$ is analytic at $a$, then its Taylor series at $a$ is
+\[f(z) = \sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!} (z-a)^n\]
+for all $z$ in some disk $|z-a| < R$.
+\end{theorem}
+
+\section{Complex Integration}
+
+\subsection{Contour Integration}
+
+\begin{definition}[Contour]
+A contour $\gamma$ in the complex plane is a piecewise smooth curve given by a continuous function $\gamma: [a,b] \to \mathbb{C}$.
+\end{definition}
+
+\begin{definition}[Contour Integral]
+For a function $f: \mathbb{C} \to \mathbb{C}$ and a contour $\gamma: [a,b] \to \mathbb{C}$, the contour integral of $f$ along $\gamma$ is defined as:
+\[\int_{\gamma} f(z) \, dz = \int_{a}^{b} f(\gamma(t)) \gamma'(t) \, dt\]
+\end{definition}
+
+\begin{theorem}[Fundamental Theorem of Contour Integration]
+If $f$ is continuous on a contour $\gamma$ and $F$ is an antiderivative of $f$ on $\gamma$, then
+\[\int_{\gamma} f(z) \, dz = F(\gamma(b)) - F(\gamma(a))\]
+\end{theorem}
+
+\subsection{Cauchy's Integral Theorem and Formula}
+
+\begin{theorem}[Cauchy's Integral Theorem]
+Let $U$ be a simply connected open subset of $\mathbb{C}$, and let $f: U \to \mathbb{C}$ be a holomorphic function. Then for any closed contour $\gamma$ in $U$:
+\[\oint_{\gamma} f(z) \, dz = 0\]
+\end{theorem}
+
+\begin{theorem}[Cauchy's Integral Formula]
+Let $U$ be an open subset of $\mathbb{C}$, and let $f: U \to \mathbb{C}$ be a holomorphic function. If $\gamma$ is a positively oriented, simple closed contour in $U$ such that the region bounded by $\gamma$ is contained in $U$, then for any point $a$ inside $\gamma$:
+\[f(a) = \frac{1}{2\pi i} \oint_{\gamma} \frac{f(z)}{z-a} \, dz\]
+\end{theorem}
+
+\begin{corollary}[Cauchy's Integral Formula for Derivatives]
+Under the same assumptions as Cauchy's Integral Formula, for any non-negative integer $n$:
+\[f^{(n)}(a) = \frac{n!}{2\pi i} \oint_{\gamma} \frac{f(z)}{(z-a)^{n+1}} \, dz\]
+\end{corollary}
+
+\section{Residue Theory}
+
+\subsection{Laurent Series}
+
+\begin{theorem}[Laurent Series]
+Let $f$ be holomorphic on an annular region $A = \{z \in \mathbb{C} : r < |z-a| < R\}$. Then $f$ can be represented by a Laurent series:
+\[f(z) = \sum_{n=-\infty}^{\infty} c_n (z-a)^n\]
+where
+\[c_n = \frac{1}{2\pi i} \oint_{\gamma} \frac{f(z)}{(z-a)^{n+1}} \, dz\]
+and $\gamma$ is any positively oriented simple closed contour in $A$ with $a$ in its interior.
+\end{theorem}
+
+\begin{definition}[Isolated Singularity]
+A point $a$ is an isolated singularity of a function $f$ if $f$ is holomorphic on some punctured disk $0 < |z-a| < R$ but not at $a$ itself.
+\end{definition}
+
+\begin{definition}[Types of Isolated Singularities]
+An isolated singularity $a$ of a function $f$ is classified as:
+\begin{enumerate}[label=(\roman*)]
+\item A removable singularity if $\lim_{z \to a} f(z)$ exists.
+\item A pole of order $m$ if the Laurent series of $f$ around $a$ has the form $f(z) = \sum_{n=-m}^{\infty} c_n (z-a)^n$ with $c_{-m} \neq 0$.
+\item An essential singularity if the Laurent series of $f$ around $a$ has infinitely many negative powers of $(z-a)$.
+\end{enumerate}
+\end{definition}
+
+\subsection{Residue Theorem}
+
+\begin{definition}[Residue]
+The residue of a function $f$ at an isolated singularity $a$, denoted $\text{Res}(f, a)$, is the coefficient $c_{-1}$ in the Laurent series of $f$ around $a$.
+\end{definition}
+
+\begin{theorem}[Residue Theorem]
+Let $U$ be an open subset of $\mathbb{C}$, and let $f: U \to \mathbb{C}$ be a meromorphic function. If $\gamma$ is a positively oriented, simple closed contour in $U$ such that $f$ has no poles on $\gamma$, then:
+\[\oint_{\gamma} f(z) \, dz = 2\pi i \sum_{k=1}^{n} \text{Res}(f, a_k)\]
+where $a_1, a_2, \ldots, a_n$ are the poles of $f$ inside $\gamma$.
+\end{theorem}
+
+\begin{proposition}[Computing Residues]
+\begin{enumerate}[label=(\roman*)]
+\item If $a$ is a simple pole of $f$, then $\text{Res}(f, a) = \lim_{z \to a} (z-a)f(z)$.
+\item If $a$ is a pole of order $m$ of $f$, then $\text{Res}(f, a) = \frac{1}{(m-1)!} \lim_{z \to a} \frac{d^{m-1}}{dz^{m-1}}[(z-a)^m f(z)]$.
+\end{enumerate}
+\end{proposition}
+
+\section{Applications of Complex Analysis}
+
+\subsection{Evaluation of Real Integrals}
+
+\begin{theorem}[Evaluating Trigonometric Integrals]
+For rational functions $R(\cos\theta, \sin\theta)$:
+\[\int_{0}^{2\pi} R(\cos\theta, \sin\theta) \, d\theta = \oint_{|z|=1} R\left(\frac{z+z^{-1}}{2}, \frac{z-z^{-1}}{2i}\right) \frac{dz}{iz}\]
+\end{theorem}
+
+\begin{theorem}[Evaluating Improper Integrals]
+For suitable functions $f$:
+\[\int_{-\infty}^{\infty} f(x) \, dx = 2\pi i \sum \text{Res}(f, z_k)\]
+where the sum is over poles $z_k$ in the upper half-plane.
+\end{theorem}
+
+\begin{example}
+The integral $\int_{0}^{\infty} \frac{dx}{1+x^2} = \frac{\pi}{2}$ can be evaluated by considering the contour integral $\oint_C \frac{dz}{1+z^2}$ along a semicircular contour in the upper half-plane and computing the residue at $z = i$.
+\end{example}
+
+\subsection{Conformal Mappings}
+
+\begin{definition}[Conformal Mapping]
+A holomorphic function $f$ with $f'(z) \neq 0$ is conformal at $z$, meaning it preserves angles between curves through $z$.
+\end{definition}
+
+\begin{theorem}[Riemann Mapping Theorem]
+Any simply connected open subset of $\mathbb{C}$ that is not the entire complex plane is conformally equivalent to the unit disk.
+\end{theorem}
+
+\begin{example}
+The Möbius transformation $f(z) = \frac{az+b}{cz+d}$ with $ad-bc \neq 0$ is conformal except at $z = -\frac{d}{c}$ (if $c \neq 0$). It maps generalized circles to generalized circles.
+\end{example}
+
+\subsection{Analytic Number Theory}
+
+\begin{definition}[Riemann Zeta Function]
+The Riemann zeta function is defined for $\text{Re}(s) > 1$ by the series:
+\[\zeta(s) = \sum_{n=1}^{\infty} \frac{1}{n^s}\]
+and can be analytically continued to the entire complex plane except for a simple pole at $s = 1$.
+\end{definition}
+
+\begin{theorem}[Functional Equation]
+The Riemann zeta function satisfies the functional equation:
+\[\zeta(s) = 2^s \pi^{s-1} \sin\left(\frac{\pi s}{2}\right) \Gamma(1-s) \zeta(1-s)\]
+\end{theorem}
+
+\begin{theorem}[Prime Number Theorem]
+The number of primes less than or equal to $x$, denoted $\pi(x)$, satisfies:
+\[\pi(x) \sim \frac{x}{\ln x}\]
+This result was proven using complex analysis, specifically the properties of the Riemann zeta function.
+\end{theorem}
+
+\section{Advanced Exercises}
+
+\begin{problem}[Maximum Modulus Principle]
+Prove that if $f$ is holomorphic and non-constant on a connected open set $U$, then $|f|$ cannot attain a maximum value at any point in $U$.
+\end{problem}
+
+\begin{problem}[Rouché's Theorem]
+Prove Rouché's Theorem: If $f$ and $g$ are holomorphic inside and on a simple closed contour $\gamma$, and $|f(z)| > |g(z)|$ for all $z$ on $\gamma$, then $f$ and $f+g$ have the same number of zeros inside $\gamma$, counting multiplicities.
+\end{problem}
+
+\begin{problem}[Residue Calculation]
+Calculate the residue of $f(z) = \frac{e^z}{(z-\pi)^3}$ at $z = \pi$.
+\end{problem}
+
+\begin{problem}[Contour Integration]
+Evaluate the integral $\int_{0}^{\infty} \frac{x^{\alpha-1}}{1+x} \, dx$ for $0 < \alpha < 1$ using contour integration.
+\end{problem}
+
+\begin{problem}[Argument Principle]
+Use the argument principle to show that if $p(z)$ is a polynomial of degree $n$ with no zeros on the circle $|z| = R$, then
+\[\frac{1}{2\pi i} \oint_{|z|=R} \frac{p'(z)}{p(z)} \, dz = \text{number of zeros of $p$ in $|z| < R$}\]
+\end{problem}
+
+\begin{problem}[Schwarz Lemma]
+Prove the Schwarz Lemma: If $f$ is holomorphic on the unit disk with $f(0) = 0$ and $|f(z)| \leq 1$ for all $|z| < 1$, then $|f(z)| \leq |z|$ for all $|z| < 1$. Furthermore, if $|f(z_0)| = |z_0|$ for some $z_0 \neq 0$, or if $|f'(0)| = 1$, then $f(z) = e^{i\theta}z$ for some real $\theta$.
+\end{problem}
+
+\begin{problem}[Harmonic Functions]
+Prove that if $f = u + iv$ is holomorphic on a domain $D$, then both $u$ and $v$ are harmonic functions, i.e., they satisfy Laplace's equation $\nabla^2 u = \nabla^2 v = 0$.
+\end{problem}
+
+\begin{problem}[Hadamard's Three-Circle Theorem]
+Let $f$ be holomorphic and bounded in the annulus $r_1 \leq |z| \leq r_3$. Define $M(r) = \max_{|z|=r} |f(z)|$. Prove that for any $r_2$ with $r_1 < r_2 < r_3$:
+\[\log M(r_2) \leq \frac{\log(r_3/r_2)}{\log(r_3/r_1)} \log M(r_1) + \frac{\log(r_2/r_1)}{\log(r_3/r_1)} \log M(r_3)\]
+\end{problem}
+
+\begin{problem}[Picard's Theorem]
+Prove that an entire function that omits two distinct values must be constant. (This is known as Picard's Little Theorem.)
+\end{problem}
+
+\begin{problem}[Research-Level: Riemann Hypothesis]
+Investigate the relationship between the distribution of the non-trivial zeros of the Riemann zeta function and the distribution of prime numbers. Specifically, analyze what would follow if all non-trivial zeros lie on the critical line $\text{Re}(s) = \frac{1}{2}$.
+\end{problem}
+
+\section{Further Reading}
+
+\begin{itemize}
+\item Ahlfors, L. V. (1979). \textit{Complex Analysis} (3rd ed.). McGraw-Hill.
+\item Conway, J. B. (2010). \textit{Functions of One Complex Variable} (2nd ed.). Springer.
+\item Stein, E. M., \& Shakarchi, R. (2003). \textit{Complex Analysis}. Princeton University Press.
+\item Needham, T. (1997). \textit{Visual Complex Analysis}. Oxford University Press.
+\item Lang, S. (2003). \textit{Complex Analysis} (4th ed.). Springer.
+\item Titchmarsh, E. C. (1939). \textit{The Theory of Functions} (2nd ed.). Oxford University Press.
+\end{itemize}
+
+\end{document} 

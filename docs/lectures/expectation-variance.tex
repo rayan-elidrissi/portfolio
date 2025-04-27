@@ -1,0 +1,400 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+
+\colorlet{lcfree}{black}
+\colorlet{lcexample}{green!65!black}
+\colorlet{lctheorem}{blue!70!black}
+\colorlet{lcproposition}{blue!70!black}
+\colorlet{lclemma}{blue!70!black}
+\colorlet{lcproblem}{red!80!black}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{problem}{Problem}[section]
+
+\title{Expectation and Variance: Foundations and Applications}
+\author{MIT Mathematics Department}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Introduction to Expected Value}
+
+\subsection{Historical Development}
+
+The concept of expectation was first formalized in the context of gambling problems by Blaise Pascal and Pierre de Fermat in the 17th century. Their correspondence in 1654 regarding the "problem of points" laid the foundation for modern probability theory and the concept of mathematical expectation. Later contributions by Christiaan Huygens, Jacob Bernoulli, and Laplace expanded these ideas into a coherent mathematical framework.
+
+\subsection{Definitions and Basic Properties}
+
+\begin{definition}[Expected Value - Discrete Case]
+For a discrete random variable $X$ with probability mass function $p(x)$, the expected value or mathematical expectation of $X$ is defined as:
+\begin{equation}
+\mathbb{E}[X] = \sum_{x \in \mathcal{X}} x \cdot p(x)
+\end{equation}
+where $\mathcal{X}$ is the support of $X$.
+\end{definition}
+
+\begin{definition}[Expected Value - Continuous Case]
+For a continuous random variable $X$ with probability density function $f(x)$, the expected value of $X$ is defined as:
+\begin{equation}
+\mathbb{E}[X] = \int_{-\infty}^{\infty} x \cdot f(x) \, dx
+\end{equation}
+provided that the improper integral converges absolutely.
+\end{definition}
+
+\begin{proposition}[Linearity of Expectation]
+For random variables $X$ and $Y$, and constants $a$ and $b$:
+\begin{equation}
+\mathbb{E}[aX + bY] = a\mathbb{E}[X] + b\mathbb{E}[Y]
+\end{equation}
+This property holds whether or not $X$ and $Y$ are independent.
+\end{proposition}
+
+\begin{proof}
+For discrete random variables, the proof follows from direct calculation:
+\begin{align*}
+\mathbb{E}[aX + bY] &= \sum_{x,y} (ax + by) \cdot p_{X,Y}(x,y)\\
+&= \sum_{x,y} ax \cdot p_{X,Y}(x,y) + \sum_{x,y} by \cdot p_{X,Y}(x,y)\\
+&= a\sum_{x} x \sum_{y} p_{X,Y}(x,y) + b\sum_{y} y \sum_{x} p_{X,Y}(x,y)\\
+&= a\sum_{x} x \cdot p_X(x) + b\sum_{y} y \cdot p_Y(y)\\
+&= a\mathbb{E}[X] + b\mathbb{E}[Y]
+\end{align*}
+
+The proof for the continuous case proceeds similarly with integrals replacing sums.
+\end{proof}
+
+\begin{theorem}[Expectation of Function of Random Variable]
+For a random variable $X$ and a function $g:\mathbb{R} \to \mathbb{R}$:
+\begin{equation}
+\mathbb{E}[g(X)] = 
+\begin{cases}
+\sum_{x \in \mathcal{X}} g(x) \cdot p(x) & \text{if $X$ is discrete}\\
+\int_{-\infty}^{\infty} g(x) \cdot f(x) \, dx & \text{if $X$ is continuous}
+\end{cases}
+\end{equation}
+\end{theorem}
+
+\begin{example}
+Consider a fair six-sided die. The random variable $X$ representing the outcome has $p(x) = 1/6$ for $x \in \{1,2,3,4,5,6\}$. The expected value is:
+\begin{equation*}
+\mathbb{E}[X] = \sum_{x=1}^{6} x \cdot \frac{1}{6} = \frac{1+2+3+4+5+6}{6} = \frac{21}{6} = 3.5
+\end{equation*}
+
+For the function $g(X) = X^2$, we have:
+\begin{equation*}
+\mathbb{E}[X^2] = \sum_{x=1}^{6} x^2 \cdot \frac{1}{6} = \frac{1+4+9+16+25+36}{6} = \frac{91}{6} \approx 15.17
+\end{equation*}
+\end{example}
+
+\section{Variance and Standard Deviation}
+
+\subsection{Definitions and Properties}
+
+\begin{definition}[Variance]
+The variance of a random variable $X$, denoted $\text{Var}(X)$ or $\sigma^2_X$, is defined as:
+\begin{equation}
+\text{Var}(X) = \mathbb{E}[(X - \mathbb{E}[X])^2]
+\end{equation}
+\end{definition}
+
+\begin{definition}[Standard Deviation]
+The standard deviation of a random variable $X$, denoted $\sigma_X$, is defined as the square root of the variance:
+\begin{equation}
+\sigma_X = \sqrt{\text{Var}(X)}
+\end{equation}
+\end{definition}
+
+\begin{theorem}[Computational Formula for Variance]
+The variance of a random variable $X$ can be computed as:
+\begin{equation}
+\text{Var}(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+\begin{align*}
+\text{Var}(X) &= \mathbb{E}[(X - \mathbb{E}[X])^2]\\
+&= \mathbb{E}[X^2 - 2X\mathbb{E}[X] + (\mathbb{E}[X])^2]\\
+&= \mathbb{E}[X^2] - 2\mathbb{E}[X]\mathbb{E}[X] + (\mathbb{E}[X])^2\\
+&= \mathbb{E}[X^2] - 2(\mathbb{E}[X])^2 + (\mathbb{E}[X])^2\\
+&= \mathbb{E}[X^2] - (\mathbb{E}[X])^2
+\end{align*}
+\end{proof}
+
+\begin{proposition}[Properties of Variance]
+For random variables $X$ and $Y$, and a constant $c$:
+\begin{enumerate}[label=(\roman*)]
+\item $\text{Var}(X) \geq 0$, with equality if and only if $X$ is constant (with probability 1)
+\item $\text{Var}(X + c) = \text{Var}(X)$
+\item $\text{Var}(cX) = c^2 \text{Var}(X)$
+\end{enumerate}
+\end{proposition}
+
+\begin{theorem}[Variance of Sum]
+For random variables $X$ and $Y$:
+\begin{equation}
+\text{Var}(X + Y) = \text{Var}(X) + \text{Var}(Y) + 2\text{Cov}(X, Y)
+\end{equation}
+where $\text{Cov}(X, Y)$ is the covariance of $X$ and $Y$.
+\end{theorem}
+
+\begin{corollary}
+If $X$ and $Y$ are independent random variables, then:
+\begin{equation}
+\text{Var}(X + Y) = \text{Var}(X) + \text{Var}(Y)
+\end{equation}
+\end{corollary}
+
+\begin{example}
+Returning to our fair die example, we can compute the variance:
+\begin{align*}
+\text{Var}(X) &= \mathbb{E}[X^2] - (\mathbb{E}[X])^2\\
+&= \frac{91}{6} - \left(3.5\right)^2\\
+&= \frac{91}{6} - \frac{49}{4}\\
+&= \frac{91 \cdot 2 - 49 \cdot 3}{12}\\
+&= \frac{182 - 147}{12}\\
+&= \frac{35}{12} \approx 2.92
+\end{align*}
+
+Therefore, the standard deviation is $\sigma_X = \sqrt{\frac{35}{12}} \approx 1.71$.
+\end{example}
+
+\section{Covariance and Correlation}
+
+\subsection{Definitions and Properties}
+
+\begin{definition}[Covariance]
+The covariance between two random variables $X$ and $Y$ is defined as:
+\begin{equation}
+\text{Cov}(X, Y) = \mathbb{E}[(X - \mathbb{E}[X])(Y - \mathbb{E}[Y])]
+\end{equation}
+\end{definition}
+
+\begin{theorem}[Computational Formula for Covariance]
+The covariance can be computed as:
+\begin{equation}
+\text{Cov}(X, Y) = \mathbb{E}[XY] - \mathbb{E}[X]\mathbb{E}[Y]
+\end{equation}
+\end{theorem}
+
+\begin{definition}[Correlation Coefficient]
+The correlation coefficient between two random variables $X$ and $Y$ with non-zero standard deviations is defined as:
+\begin{equation}
+\rho_{X,Y} = \frac{\text{Cov}(X, Y)}{\sigma_X \sigma_Y}
+\end{equation}
+\end{definition}
+
+\begin{proposition}[Properties of Correlation]
+The correlation coefficient $\rho_{X,Y}$ satisfies:
+\begin{enumerate}[label=(\roman*)]
+\item $-1 \leq \rho_{X,Y} \leq 1$
+\item $\rho_{X,Y} = 1$ if and only if $Y = aX + b$ for some constants $a > 0$ and $b$
+\item $\rho_{X,Y} = -1$ if and only if $Y = aX + b$ for some constants $a < 0$ and $b$
+\item If $X$ and $Y$ are independent, then $\rho_{X,Y} = 0$ (but the converse is not generally true)
+\end{enumerate}
+\end{proposition}
+
+\section{Moment-Generating Functions}
+
+\subsection{Definition and Basic Properties}
+
+\begin{definition}[Moment-Generating Function]
+The moment-generating function (MGF) of a random variable $X$ is defined as:
+\begin{equation}
+M_X(t) = \mathbb{E}[e^{tX}]
+\end{equation}
+for all values of $t$ for which the expectation exists.
+\end{definition}
+
+\begin{theorem}[Moments from MGF]
+If the MGF $M_X(t)$ exists in a neighborhood of $t = 0$, then:
+\begin{equation}
+\mathbb{E}[X^n] = \left.\frac{d^n}{dt^n}M_X(t)\right|_{t=0}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+We can express the MGF as a Taylor series:
+\begin{align*}
+M_X(t) &= \mathbb{E}[e^{tX}]\\
+&= \mathbb{E}\left[\sum_{n=0}^{\infty}\frac{(tX)^n}{n!}\right]\\
+&= \sum_{n=0}^{\infty}\frac{t^n}{n!}\mathbb{E}[X^n]
+\end{align*}
+
+Taking the $n$-th derivative with respect to $t$ and evaluating at $t = 0$ yields:
+\begin{equation*}
+\left.\frac{d^n}{dt^n}M_X(t)\right|_{t=0} = \mathbb{E}[X^n]
+\end{equation*}
+\end{proof}
+
+\begin{example}
+For a standard normal random variable $Z \sim \mathcal{N}(0, 1)$, the MGF is:
+\begin{equation*}
+M_Z(t) = e^{t^2/2}
+\end{equation*}
+
+We can verify that:
+\begin{align*}
+\mathbb{E}[Z] &= \left.\frac{d}{dt}M_Z(t)\right|_{t=0} = \left.\frac{d}{dt}e^{t^2/2}\right|_{t=0} = \left.t e^{t^2/2}\right|_{t=0} = 0\\
+\mathbb{E}[Z^2] &= \left.\frac{d^2}{dt^2}M_Z(t)\right|_{t=0} = \left.\frac{d}{dt}(t e^{t^2/2})\right|_{t=0} = \left.(e^{t^2/2} + t^2 e^{t^2/2})\right|_{t=0} = 1
+\end{align*}
+\end{example}
+
+\section{Inequalities and Concentration Bounds}
+
+\subsection{Markov's Inequality}
+
+\begin{theorem}[Markov's Inequality]
+For a non-negative random variable $X$ and any $a > 0$:
+\begin{equation}
+P(X \geq a) \leq \frac{\mathbb{E}[X]}{a}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Define the indicator function $I_{\{X \geq a\}}$, which equals 1 when $X \geq a$ and 0 otherwise. Since $X \geq 0$, we have:
+\begin{equation*}
+X \geq a \cdot I_{\{X \geq a\}}
+\end{equation*}
+
+Taking expectations of both sides:
+\begin{align*}
+\mathbb{E}[X] &\geq \mathbb{E}[a \cdot I_{\{X \geq a\}}]\\
+&= a \cdot \mathbb{E}[I_{\{X \geq a\}}]\\
+&= a \cdot P(X \geq a)
+\end{align*}
+
+Rearranging gives the desired inequality:
+\begin{equation*}
+P(X \geq a) \leq \frac{\mathbb{E}[X]}{a}
+\end{equation*}
+\end{proof}
+
+\subsection{Chebyshev's Inequality}
+
+\begin{theorem}[Chebyshev's Inequality]
+For a random variable $X$ with finite mean $\mu$ and variance $\sigma^2$, and any $k > 0$:
+\begin{equation}
+P(|X - \mu| \geq k\sigma) \leq \frac{1}{k^2}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Apply Markov's inequality to the non-negative random variable $(X - \mu)^2$:
+\begin{align*}
+P(|X - \mu| \geq k\sigma) &= P((X - \mu)^2 \geq k^2\sigma^2)\\
+&\leq \frac{\mathbb{E}[(X - \mu)^2]}{k^2\sigma^2}\\
+&= \frac{\sigma^2}{k^2\sigma^2}\\
+&= \frac{1}{k^2}
+\end{align*}
+\end{proof}
+
+\begin{corollary}[One-sided Chebyshev Inequality]
+For a random variable $X$ with finite mean $\mu$ and variance $\sigma^2$, and any $k > 0$:
+\begin{equation}
+P(X - \mu \geq k\sigma) \leq \frac{1}{1 + k^2} \quad \text{and} \quad P(X - \mu \leq -k\sigma) \leq \frac{1}{1 + k^2}
+\end{equation}
+\end{corollary}
+
+\subsection{Chernoff Bounds}
+
+\begin{theorem}[Chernoff Bound - Upper Tail]
+Let $X_1, X_2, \ldots, X_n$ be independent random variables with $X_i \in [0, 1]$ for all $i$. Let $X = \sum_{i=1}^{n} X_i$ and $\mu = \mathbb{E}[X]$. Then for any $\delta > 0$:
+\begin{equation}
+P(X \geq (1+\delta)\mu) \leq \left(\frac{e^\delta}{(1+\delta)^{1+\delta}}\right)^{\mu}
+\end{equation}
+\end{theorem}
+
+\begin{theorem}[Chernoff Bound - Lower Tail]
+Under the same conditions as above, for any $0 < \delta < 1$:
+\begin{equation}
+P(X \leq (1-\delta)\mu) \leq e^{-\mu\delta^2/2}
+\end{equation}
+\end{theorem}
+
+\section{Applications}
+
+\subsection{Portfolio Theory}
+
+In modern portfolio theory, expectation and variance play crucial roles in quantifying returns and risk. For a portfolio with $n$ assets, the expected return is:
+
+\begin{equation}
+\mathbb{E}[R_p] = \sum_{i=1}^{n} w_i \mathbb{E}[R_i]
+\end{equation}
+
+where $w_i$ is the weight of asset $i$ and $\mathbb{E}[R_i]$ is its expected return.
+
+The variance (risk) of the portfolio is:
+
+\begin{equation}
+\text{Var}(R_p) = \sum_{i=1}^{n}\sum_{j=1}^{n} w_i w_j \text{Cov}(R_i, R_j)
+\end{equation}
+
+\subsection{Statistical Estimators}
+
+For a random sample $X_1, X_2, \ldots, X_n$ from a distribution with mean $\mu$ and variance $\sigma^2$, the sample mean $\bar{X} = \frac{1}{n}\sum_{i=1}^{n} X_i$ has:
+
+\begin{equation}
+\mathbb{E}[\bar{X}] = \mu \quad \text{and} \quad \text{Var}(\bar{X}) = \frac{\sigma^2}{n}
+\end{equation}
+
+This leads to important results like the Law of Large Numbers and the Central Limit Theorem, which form the foundation of statistical inference.
+
+\section{Advanced Exercises}
+
+\begin{problem}
+Let $X$ be a random variable with $\mathbb{E}[X] = 3$ and $\text{Var}(X) = 4$. Find $\mathbb{E}[2X + 5]$ and $\text{Var}(2X + 5)$.
+\end{problem}
+
+\begin{problem}
+If $X$ and $Y$ are independent random variables with $\mathbb{E}[X] = 2$, $\mathbb{E}[Y] = 1$, $\text{Var}(X) = 3$, and $\text{Var}(Y) = 2$, find $\mathbb{E}[XY]$ and $\text{Var}(X - 2Y)$.
+\end{problem}
+
+\begin{problem}
+Show that for any random variable $X$ with finite mean $\mu$ and variance $\sigma^2$, the expected value of $(X - c)^2$ is minimized when $c = \mu$.
+\end{problem}
+
+\begin{problem}
+For a binomial random variable $X \sim \text{Bin}(n, p)$, derive the mean and variance using the moment-generating function.
+\end{problem}
+
+\begin{problem}
+Prove that if $X_1, X_2, \ldots, X_n$ are independent random variables with finite means and variances, then:
+\begin{equation*}
+\text{Var}\left(\prod_{i=1}^{n} X_i\right) = \prod_{i=1}^{n}\left(\text{Var}(X_i) + (\mathbb{E}[X_i])^2\right) - \prod_{i=1}^{n}(\mathbb{E}[X_i])^2
+\end{equation*}
+\end{problem}
+
+\section{Further Reading}
+
+\begin{itemize}
+\item Durrett, R. (2019). \textit{Probability: Theory and Examples} (5th ed.). Cambridge University Press.
+\item Gut, A. (2013). \textit{Probability: A Graduate Course} (2nd ed.). Springer.
+\item Billingsley, P. (2012). \textit{Probability and Measure} (Anniversary ed.). Wiley.
+\item Grimmett, G., \& Stirzaker, D. (2020). \textit{Probability and Random Processes} (4th ed.). Oxford University Press.
+\item Shiryaev, A. N. (2016). \textit{Probability-1} (3rd ed.). Springer.
+\end{itemize}
+
+\end{document} 

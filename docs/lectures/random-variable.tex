@@ -1,0 +1,472 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+
+\colorlet{rvfree}{black}
+\colorlet{rvexample}{green!65!black}
+\colorlet{rvtheorem}{blue!70!black}
+\colorlet{rvproposition}{blue!70!black}
+\colorlet{rvlemma}{blue!70!black}
+\colorlet{rvproblem}{red!80!black}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{problem}{Problem}[section]
+
+\title{Random Variables: Theory and Applications}
+\author{MIT Mathematics Department}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Introduction to Random Variables}
+
+\subsection{Probability Spaces and Events}
+
+Before defining random variables, we need to establish the foundation of probability theory.
+
+\begin{definition}[Probability Space]
+A probability space is a triple $(\Omega, \mathcal{F}, P)$ where:
+\begin{itemize}
+\item $\Omega$ is the sample space, representing all possible outcomes of a random experiment.
+\item $\mathcal{F}$ is a $\sigma$-algebra of subsets of $\Omega$, representing the collection of events.
+\item $P: \mathcal{F} \rightarrow [0,1]$ is a probability measure satisfying:
+  \begin{enumerate}[label=(\roman*)]
+  \item $P(\Omega) = 1$
+  \item For any countable collection $\{A_i\}_{i=1}^{\infty}$ of disjoint events in $\mathcal{F}$, $P\left(\bigcup_{i=1}^{\infty} A_i\right) = \sum_{i=1}^{\infty} P(A_i)$
+  \end{enumerate}
+\end{itemize}
+\end{definition}
+
+\begin{remark}
+The $\sigma$-algebra $\mathcal{F}$ must satisfy: (i) $\Omega \in \mathcal{F}$, (ii) if $A \in \mathcal{F}$, then $A^c \in \mathcal{F}$, and (iii) if $A_1, A_2, ... \in \mathcal{F}$, then $\bigcup_{i=1}^{\infty} A_i \in \mathcal{F}$.
+\end{remark}
+
+\subsection{Definition and Basic Properties}
+
+\begin{definition}[Random Variable]
+A random variable $X$ is a measurable function from a probability space $(\Omega, \mathcal{F}, P)$ to the real line $\mathbb{R}$:
+\begin{equation}
+X: \Omega \rightarrow \mathbb{R}
+\end{equation}
+such that for any Borel set $B \subset \mathbb{R}$, the preimage $X^{-1}(B) = \{\omega \in \Omega : X(\omega) \in B\} \in \mathcal{F}$.
+\end{definition}
+
+\begin{remark}
+Informally, a random variable is a numerical assignment to each outcome in the sample space. The measurability condition ensures that we can compute probabilities associated with the values taken by the random variable.
+\end{remark}
+
+\begin{definition}[Distribution Function]
+The cumulative distribution function (CDF) of a random variable $X$ is defined as:
+\begin{equation}
+F_X(x) = P(X \leq x) = P(\{\omega \in \Omega : X(\omega) \leq x\})
+\end{equation}
+for all $x \in \mathbb{R}$.
+\end{definition}
+
+\begin{theorem}[Properties of CDF]
+For any random variable $X$ with CDF $F_X$:
+\begin{enumerate}[label=(\roman*)]
+\item $F_X$ is non-decreasing: if $x_1 \leq x_2$, then $F_X(x_1) \leq F_X(x_2)$.
+\item $F_X$ is right-continuous: $\lim_{x \downarrow x_0} F_X(x) = F_X(x_0)$ for all $x_0 \in \mathbb{R}$.
+\item $\lim_{x \rightarrow -\infty} F_X(x) = 0$ and $\lim_{x \rightarrow \infty} F_X(x) = 1$.
+\item $P(a < X \leq b) = F_X(b) - F_X(a)$.
+\end{enumerate}
+\end{theorem}
+
+\section{Discrete Random Variables}
+
+\begin{definition}[Discrete Random Variable]
+A random variable $X$ is discrete if its range is countable, i.e., there exists a countable set $\mathcal{X} \subset \mathbb{R}$ such that $P(X \in \mathcal{X}) = 1$.
+\end{definition}
+
+\begin{definition}[Probability Mass Function]
+The probability mass function (PMF) of a discrete random variable $X$ is defined as:
+\begin{equation}
+p_X(x) = P(X = x)
+\end{equation}
+for all $x \in \mathbb{R}$.
+\end{definition}
+
+\begin{proposition}[PMF Properties]
+For any discrete random variable with PMF $p_X$:
+\begin{enumerate}[label=(\roman*)]
+\item $p_X(x) \geq 0$ for all $x \in \mathbb{R}$.
+\item $\sum_{x \in \mathcal{X}} p_X(x) = 1$, where $\mathcal{X}$ is the range of $X$.
+\item $F_X(x) = \sum_{t \leq x} p_X(t)$.
+\end{enumerate}
+\end{proposition}
+
+\subsection{Common Discrete Distributions}
+
+\begin{definition}[Bernoulli Distribution]
+A random variable $X$ follows a Bernoulli distribution with parameter $p \in [0,1]$, denoted $X \sim \text{Bernoulli}(p)$, if:
+\begin{equation}
+p_X(x) = 
+\begin{cases}
+p & \text{if } x = 1 \\
+1-p & \text{if } x = 0 \\
+0 & \text{otherwise}
+\end{cases}
+\end{equation}
+\end{definition}
+
+\begin{definition}[Binomial Distribution]
+A random variable $X$ follows a binomial distribution with parameters $n \in \mathbb{N}$ and $p \in [0,1]$, denoted $X \sim \text{Binomial}(n,p)$, if:
+\begin{equation}
+p_X(x) = 
+\begin{cases}
+\binom{n}{x} p^x (1-p)^{n-x} & \text{if } x \in \{0,1,2,\ldots,n\} \\
+0 & \text{otherwise}
+\end{cases}
+\end{equation}
+where $\binom{n}{x} = \frac{n!}{x!(n-x)!}$ is the binomial coefficient.
+\end{definition}
+
+\begin{definition}[Geometric Distribution]
+A random variable $X$ follows a geometric distribution with parameter $p \in (0,1]$, denoted $X \sim \text{Geometric}(p)$, if:
+\begin{equation}
+p_X(x) = 
+\begin{cases}
+p(1-p)^{x-1} & \text{if } x \in \{1,2,3,\ldots\} \\
+0 & \text{otherwise}
+\end{cases}
+\end{equation}
+\end{definition}
+
+\begin{definition}[Poisson Distribution]
+A random variable $X$ follows a Poisson distribution with parameter $\lambda > 0$, denoted $X \sim \text{Poisson}(\lambda)$, if:
+\begin{equation}
+p_X(x) = 
+\begin{cases}
+\frac{\lambda^x e^{-\lambda}}{x!} & \text{if } x \in \{0,1,2,\ldots\} \\
+0 & \text{otherwise}
+\end{cases}
+\end{equation}
+\end{definition}
+
+\begin{example}[Applications of Discrete Distributions]
+\begin{enumerate}[label=(\roman*)]
+\item Bernoulli: Modeling success/failure in a single trial (e.g., a coin flip)
+\item Binomial: Number of successes in $n$ independent trials (e.g., number of heads in $n$ coin flips)
+\item Geometric: Number of trials until first success (e.g., number of coin flips until first head)
+\item Poisson: Number of events in a fixed time interval (e.g., number of radioactive decays per minute)
+\end{enumerate}
+\end{example}
+
+\section{Continuous Random Variables}
+
+\begin{definition}[Continuous Random Variable]
+A random variable $X$ is continuous if there exists a non-negative function $f_X: \mathbb{R} \rightarrow [0,\infty)$ such that for any $a \leq b$:
+\begin{equation}
+P(a \leq X \leq b) = \int_a^b f_X(x) \, dx
+\end{equation}
+The function $f_X$ is called the probability density function (PDF) of $X$.
+\end{definition}
+
+\begin{proposition}[PDF Properties]
+For any continuous random variable with PDF $f_X$:
+\begin{enumerate}[label=(\roman*)]
+\item $f_X(x) \geq 0$ for all $x \in \mathbb{R}$.
+\item $\int_{-\infty}^{\infty} f_X(x) \, dx = 1$.
+\item $F_X(x) = \int_{-\infty}^x f_X(t) \, dt$.
+\item $f_X(x) = \frac{d}{dx}F_X(x)$ where $F_X$ is differentiable.
+\item $P(X = a) = 0$ for any $a \in \mathbb{R}$.
+\end{enumerate}
+\end{proposition}
+
+\subsection{Common Continuous Distributions}
+
+\begin{definition}[Uniform Distribution]
+A random variable $X$ follows a uniform distribution on the interval $[a,b]$, denoted $X \sim \text{Uniform}(a,b)$, if:
+\begin{equation}
+f_X(x) = 
+\begin{cases}
+\frac{1}{b-a} & \text{if } x \in [a,b] \\
+0 & \text{otherwise}
+\end{cases}
+\end{equation}
+\end{definition}
+
+\begin{definition}[Exponential Distribution]
+A random variable $X$ follows an exponential distribution with parameter $\lambda > 0$, denoted $X \sim \text{Exponential}(\lambda)$, if:
+\begin{equation}
+f_X(x) = 
+\begin{cases}
+\lambda e^{-\lambda x} & \text{if } x \geq 0 \\
+0 & \text{otherwise}
+\end{cases}
+\end{equation}
+\end{definition}
+
+\begin{definition}[Normal Distribution]
+A random variable $X$ follows a normal distribution with parameters $\mu \in \mathbb{R}$ and $\sigma^2 > 0$, denoted $X \sim \text{Normal}(\mu, \sigma^2)$ or $X \sim \mathcal{N}(\mu, \sigma^2)$, if:
+\begin{equation}
+f_X(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}
+\end{equation}
+for all $x \in \mathbb{R}$.
+\end{definition}
+
+\begin{definition}[Standard Normal Distribution]
+A random variable $Z$ follows a standard normal distribution, denoted $Z \sim \mathcal{N}(0,1)$, if:
+\begin{equation}
+f_Z(z) = \frac{1}{\sqrt{2\pi}} e^{-\frac{z^2}{2}}
+\end{equation}
+for all $z \in \mathbb{R}$.
+\end{definition}
+
+\begin{theorem}[Normal Standardization]
+If $X \sim \mathcal{N}(\mu, \sigma^2)$, then $Z = \frac{X - \mu}{\sigma} \sim \mathcal{N}(0,1)$.
+\end{theorem}
+
+\section{Expectation and Moments}
+
+\begin{definition}[Expectation]
+The expectation (or mean) of a random variable $X$ is defined as:
+\begin{equation}
+E[X] = 
+\begin{cases}
+\sum_{x \in \mathcal{X}} x \, p_X(x) & \text{if $X$ is discrete} \\
+\int_{-\infty}^{\infty} x \, f_X(x) \, dx & \text{if $X$ is continuous}
+\end{cases}
+\end{equation}
+provided the sum or integral exists.
+\end{definition}
+
+\begin{definition}[Function Expectation]
+For any function $g: \mathbb{R} \rightarrow \mathbb{R}$ and random variable $X$:
+\begin{equation}
+E[g(X)] = 
+\begin{cases}
+\sum_{x \in \mathcal{X}} g(x) \, p_X(x) & \text{if $X$ is discrete} \\
+\int_{-\infty}^{\infty} g(x) \, f_X(x) \, dx & \text{if $X$ is continuous}
+\end{cases}
+\end{equation}
+provided the sum or integral exists.
+\end{definition}
+
+\begin{theorem}[Properties of Expectation]
+For random variables $X$ and $Y$, and constants $a$, $b$:
+\begin{enumerate}[label=(\roman*)]
+\item $E[a] = a$
+\item $E[aX + b] = aE[X] + b$
+\item If $X \geq 0$ almost surely, then $E[X] \geq 0$
+\item If $X$ and $Y$ are independent, then $E[XY] = E[X]E[Y]$
+\end{enumerate}
+\end{theorem}
+
+\begin{definition}[Variance]
+The variance of a random variable $X$ is defined as:
+\begin{equation}
+\text{Var}(X) = E[(X - E[X])^2] = E[X^2] - (E[X])^2
+\end{equation}
+\end{definition}
+
+\begin{definition}[Standard Deviation]
+The standard deviation of a random variable $X$ is defined as:
+\begin{equation}
+\sigma_X = \sqrt{\text{Var}(X)}
+\end{equation}
+\end{definition}
+
+\begin{theorem}[Properties of Variance]
+For random variables $X$ and $Y$, and constants $a$, $b$:
+\begin{enumerate}[label=(\roman*)]
+\item $\text{Var}(a) = 0$
+\item $\text{Var}(aX + b) = a^2 \text{Var}(X)$
+\item If $X$ and $Y$ are independent, then $\text{Var}(X + Y) = \text{Var}(X) + \text{Var}(Y)$
+\end{enumerate}
+\end{theorem}
+
+\section{Moment Generating Functions}
+
+\begin{definition}[Moment Generating Function]
+The moment generating function (MGF) of a random variable $X$ is defined as:
+\begin{equation}
+M_X(t) = E[e^{tX}]
+\end{equation}
+for all $t \in \mathbb{R}$ where the expectation exists.
+\end{definition}
+
+\begin{theorem}[Properties of MGF]
+If the MGF $M_X(t)$ exists in an open interval containing 0, then:
+\begin{enumerate}[label=(\roman*)]
+\item $M_X(0) = 1$
+\item $M_X^{(n)}(0) = E[X^n]$, i.e., the $n$-th derivative of $M_X(t)$ evaluated at $t=0$ equals the $n$-th moment of $X$.
+\item If $X$ and $Y$ are independent random variables with MGFs $M_X(t)$ and $M_Y(t)$, then $M_{X+Y}(t) = M_X(t) \cdot M_Y(t)$.
+\item If $Y = aX + b$ for constants $a$ and $b$, then $M_Y(t) = e^{bt} \cdot M_X(at)$.
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Uniqueness of MGF]
+If two random variables have the same moment generating function, they have the same distribution.
+\end{theorem}
+
+\begin{example}[MGF of Normal Distribution]
+For $X \sim \mathcal{N}(\mu, \sigma^2)$:
+\begin{equation}
+M_X(t) = e^{\mu t + \frac{\sigma^2 t^2}{2}}
+\end{equation}
+\end{example}
+
+\section{Transformations of Random Variables}
+
+\subsection{Univariate Transformations}
+
+\begin{theorem}[Change of Variables - Discrete Case]
+If $X$ is a discrete random variable with PMF $p_X(x)$ and $Y = g(X)$ where $g$ is a function, then:
+\begin{equation}
+p_Y(y) = \sum_{x: g(x) = y} p_X(x)
+\end{equation}
+\end{theorem}
+
+\begin{theorem}[Change of Variables - Continuous Case]
+If $X$ is a continuous random variable with PDF $f_X(x)$ and $Y = g(X)$ where $g$ is a strictly monotonic and differentiable function with inverse $g^{-1}$, then:
+\begin{equation}
+f_Y(y) = f_X(g^{-1}(y)) \left| \frac{d}{dy}g^{-1}(y) \right|
+\end{equation}
+\end{theorem}
+
+\section{Joint Distributions and Independence}
+
+\begin{definition}[Joint Distribution Function]
+The joint cumulative distribution function of random variables $X$ and $Y$ is defined as:
+\begin{equation}
+F_{X,Y}(x,y) = P(X \leq x, Y \leq y)
+\end{equation}
+\end{definition}
+
+\begin{definition}[Joint PMF]
+For discrete random variables $X$ and $Y$, the joint probability mass function is:
+\begin{equation}
+p_{X,Y}(x,y) = P(X = x, Y = y)
+\end{equation}
+\end{definition}
+
+\begin{definition}[Joint PDF]
+For continuous random variables $X$ and $Y$, the joint probability density function $f_{X,Y}(x,y)$ satisfies:
+\begin{equation}
+P((X,Y) \in A) = \iint_A f_{X,Y}(x,y) \, dx \, dy
+\end{equation}
+for any appropriate region $A \subset \mathbb{R}^2$.
+\end{definition}
+
+\begin{definition}[Marginal Distributions]
+For jointly distributed random variables $X$ and $Y$:
+\begin{enumerate}[label=(\roman*)]
+\item Discrete case:
+\begin{equation}
+p_X(x) = \sum_y p_{X,Y}(x,y) \quad \text{and} \quad p_Y(y) = \sum_x p_{X,Y}(x,y)
+\end{equation}
+\item Continuous case:
+\begin{equation}
+f_X(x) = \int_{-\infty}^{\infty} f_{X,Y}(x,y) \, dy \quad \text{and} \quad f_Y(y) = \int_{-\infty}^{\infty} f_{X,Y}(x,y) \, dx
+\end{equation}
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Independence]
+Random variables $X$ and $Y$ are independent if and only if one of the following equivalent conditions holds:
+\begin{enumerate}[label=(\roman*)]
+\item $F_{X,Y}(x,y) = F_X(x) \cdot F_Y(y)$ for all $x, y \in \mathbb{R}$
+\item For discrete random variables: $p_{X,Y}(x,y) = p_X(x) \cdot p_Y(y)$ for all $x, y$
+\item For continuous random variables: $f_{X,Y}(x,y) = f_X(x) \cdot f_Y(y)$ for all $x, y$
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Properties of Independent Random Variables]
+If $X$ and $Y$ are independent random variables, then:
+\begin{enumerate}[label=(\roman*)]
+\item $E[XY] = E[X] \cdot E[Y]$
+\item $\text{Var}(X + Y) = \text{Var}(X) + \text{Var}(Y)$
+\item $M_{X+Y}(t) = M_X(t) \cdot M_Y(t)$
+\end{enumerate}
+\end{theorem}
+
+\section{Conditional Distributions}
+
+\begin{definition}[Conditional PMF]
+For discrete random variables $X$ and $Y$, the conditional PMF of $X$ given $Y = y$ is:
+\begin{equation}
+p_{X|Y}(x|y) = P(X = x | Y = y) = \frac{p_{X,Y}(x,y)}{p_Y(y)}
+\end{equation}
+provided $p_Y(y) > 0$.
+\end{definition}
+
+\begin{definition}[Conditional PDF]
+For continuous random variables $X$ and $Y$, the conditional PDF of $X$ given $Y = y$ is:
+\begin{equation}
+f_{X|Y}(x|y) = \frac{f_{X,Y}(x,y)}{f_Y(y)}
+\end{equation}
+provided $f_Y(y) > 0$.
+\end{definition}
+
+\begin{theorem}[Conditional Expectation]
+For random variables $X$ and $Y$:
+\begin{enumerate}[label=(\roman*)]
+\item $E[X|Y=y]$ is defined as the expectation of $X$ with respect to the conditional distribution of $X$ given $Y = y$.
+\item $E[E[X|Y]] = E[X]$ (Law of Total Expectation)
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Law of Total Variance]
+For random variables $X$ and $Y$:
+\begin{equation}
+\text{Var}(X) = E[\text{Var}(X|Y)] + \text{Var}(E[X|Y])
+\end{equation}
+\end{theorem}
+
+\section{Advanced Examples and Applications}
+
+\begin{problem}
+A fair six-sided die is rolled repeatedly until a six appears. Let $X$ denote the number of rolls required. Find the PMF, expected value, and variance of $X$.
+\end{problem}
+
+\begin{problem}
+In a communication system, errors occur independently with probability $p$ for each transmitted bit. If a message consists of $n$ bits, find the PMF of the number of errors and compute the probability that there are at most 2 errors.
+\end{problem}
+
+\begin{problem}
+The lifetime (in hours) of an electronic component follows an exponential distribution with parameter $\lambda = 0.001$. Find the probability that the component lasts more than 1000 hours. If 10 such components operate independently, find the probability that at least 8 of them last more than 1000 hours.
+\end{problem}
+
+\begin{problem}
+Customers arrive at a service station according to a Poisson process with rate $\lambda = 5$ per hour. Find the probability that exactly 3 customers arrive in a 30-minute period. Also, find the probability that the time between consecutive arrivals exceeds 15 minutes.
+\end{problem}
+
+\begin{problem}
+Let $X$ and $Y$ be independent standard normal random variables. Find the distribution of $Z = X^2 + Y^2$ and $W = X/Y$.
+\end{problem}
+
+\section{Further Reading}
+
+\begin{itemize}
+\item Ross, S. M. (2014). \textit{Introduction to Probability Models} (11th ed.). Academic Press.
+\item Durrett, R. (2019). \textit{Probability: Theory and Examples} (5th ed.). Cambridge University Press.
+\item Bertsekas, D. P., \& Tsitsiklis, J. N. (2008). \textit{Introduction to Probability} (2nd ed.). Athena Scientific.
+\item Blitzstein, J. K., \& Hwang, J. (2019). \textit{Introduction to Probability} (2nd ed.). CRC Press.
+\item Casella, G., \& Berger, R. L. (2002). \textit{Statistical Inference} (2nd ed.). Duxbury.
+\end{itemize}
+
+\end{document}
